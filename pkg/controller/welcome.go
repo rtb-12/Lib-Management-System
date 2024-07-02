@@ -3,7 +3,7 @@ package controller
 import (
 	"net/http"
 
-	"github.com/ashpect/go-mvc/pkg/views"
+	"github.com/rtb-12/Lib-Management-System/pkg/views"
 )
 
 func Welcome(writer http.ResponseWriter, request *http.Request) {

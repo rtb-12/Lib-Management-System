@@ -3,7 +3,7 @@ package models
 import (
 	"fmt"
 
-	"github.com/ashpect/go-mvc/pkg/types"
+	"github.com/rtb-12/Lib-Management-System/pkg/types"
 )
 
 func FetchBooks() types.ListBooks {

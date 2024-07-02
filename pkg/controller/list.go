@@ -3,8 +3,8 @@ package controller
 import (
 	"net/http"
 
-	"github.com/ashpect/go-mvc/pkg/models"
-	"github.com/ashpect/go-mvc/pkg/views"
+	"github.com/rtb-12/Lib-Management-System/pkg/models"
+	"github.com/rtb-12/Lib-Management-System/pkg/views"
 )
 
 func List(writer http.ResponseWriter, request *http.Request) {

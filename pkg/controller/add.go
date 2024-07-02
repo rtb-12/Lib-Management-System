@@ -5,9 +5,8 @@ import (
 	"fmt"
 	"net/http"
 
-
-	"github.com/ashpect/go-mvc/pkg/models"
-	"github.com/ashpect/go-mvc/pkg/types"
+	"github.com/rtb-12/Lib-Management-System/pkg/models"
+	"github.com/rtb-12/Lib-Management-System/pkg/types"
 )
 
 func Add(writer http.ResponseWriter, request *http.Request) {

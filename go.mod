@@ -1,4 +1,4 @@
-module github.com/ashpect/go-mvc
+module github.com/rtb-12/Lib-Management-System
 
 go 1.20
 

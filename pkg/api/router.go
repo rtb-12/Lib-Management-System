@@ -2,7 +2,8 @@ package api
 
 import (
 	"net/http"
-	"pkg/controller"
+
+	"github.com/rtb-12/Lib-Management-System/pkg/controller"
 
 	"github.com/gorilla/mux"
 )

@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/ashpect/go-mvc/pkg/api"
+	"github.com/rtb-12/Lib-Management-System/pkg/api"
 )
 
 func main() {

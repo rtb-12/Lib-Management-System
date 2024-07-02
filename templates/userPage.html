@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard - Library System</title>
+    <link rel="stylesheet" href="style.css"> <!-- Link to CSS for styling -->
+</head>
+<style>
+    /* General body styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+}
+
+header {
+    background-color: #007bff;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+main {
+    padding: 20px;
+}
+
+/* Catalog section styling */
+#catalog {
+    margin-top: 20px;
+}
+
+.books {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.book {
+    background-color: white;
+    border: 1px solid #ddd;
+    padding: 15px;
+    width: 200px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-radius: 5px;
+}
+
+.book h3 {
+    margin-top: 0;
+}
+
+.book p {
+    font-size: 14px;
+    color: #666;
+}
+
+/* Responsive adjustments */
+@media (max-width: 600px) {
+    .books {
+        flex-direction: column;
+        align-items: center;
+    }
+}
+</style>
+<body>
+    <header>
+        <h1>Library System</h1>
+    </header>
+    <main>
+        <section id="catalog">
+            <h2>Book Catalog</h2>
+            <div class="books">
+                <!-- Example Book -->
+                <div class="book">
+                    <h3>Book Title</h3>
+                    <p>Author: Author Name</p>
+                    <button>Issue Book</button>
+                </div>
+                <!-- Repeat for each book in the catalog -->
+            </div>
+        </section>
+        <section id="issued-books">
+            <h2>Issued Books</h2>
+            <ul>
+                <!-- Example Issued Book -->
+                <li>
+                    <span>Book Title by Author Name</span>
+                    <span>Due Date: YYYY-MM-DD</span>
+                </li>
+                <!-- Repeat for each issued book -->
+            </ul>
+        </section>
+    </main>
+</body>
+</html>

@@ -7,6 +7,6 @@ import (
 )
 
 func main() {
-	fmt.Println("Started the API server")
+	fmt.Println("Started the API server on localhost:8000")
 	api.Start()
 }

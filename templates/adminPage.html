@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Page</title>
+</head>
+<style>
+    /* Container Styles */
+    .catalogContainer, .requestContainer, .issuedContainer {
+        margin: 20px;
+        font-family: Arial, sans-serif;
+        background-color: #f9f9f9; /* Uniform light grey background */
+        padding: 10px;
+        border-radius: 5px; /* Rounded corners */
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
+    }
+
+    /* Table Styles */
+    .catalogTable, .requestTable, .issuedTable {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px; /* Space above the table */
+    }
+
+    .catalogTable th, .catalogTable td, 
+    .requestTable th, .requestTable td, 
+    .issuedTable th, .issuedTable td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: left;
+    }
+
+    /* Table Headers */
+    .catalogTable th, .requestTable th, .issuedTable th {
+        background-color: #4CAF50; /* Uniform green background */
+        color: white;
+    }
+
+    /* Zebra Striping for Rows */
+    .catalogTable tr:nth-child(even), 
+    .requestTable tr:nth-child(even), 
+    .issuedTable tr:nth-child(even) {
+        background-color: #f2f2f2;
+    }
+
+    .catalogTable tr:hover, .requestTable tr:hover, .issuedTable tr:hover {
+        background-color: #ddd; /* Light grey background on row hover */
+    }
+
+    /* Button and Link Styles */
+    .editLink, .issuedTable button, .allocateForm button {
+        color: white;
+        background-color: #4CAF50; /* Uniform green background */
+        padding: 5px 10px;
+        text-decoration: none;
+        border: none;
+        border-radius: 3px;
+        cursor: pointer;
+    }
+
+    .editLink:hover, .issuedTable button:hover, .allocateForm button:hover {
+        background-color: #45a049; /* Darker green on hover */
+    }
+
+    .allocateForm input[type="date"] {
+        padding: 5px;
+        margin-right: 10px;
+    }
+
+    /* The Modal (background) */
+.modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+.close:hover,
+.close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+</style>
+<body>
+
+<div class="catalogContainer">
+    <h1>Catalog of Books</h1>
+    <table class="catalogTable">
+        <tr>
+            <th>Title</th>
+            <th>Author</th>
+            <th>Stock</th>
+            <th>Edit</th>
+        </tr>
+        <!-- Dynamically generated rows will go here -->
+    </table>
+</div>
+
+<div class="requestContainer">
+    <h1>Requested Books to Issue</h1>
+    <table class="requestTable">
+        <tr>
+            <th>User ID</th>
+            <th>Book ID</th>
+            <th>Allocate</th>
+        </tr>
+        <!-- Dynamically generated rows will go here -->
+    </table>
+</div>
+
+<div class="issuedContainer">
+    <h1>Issued Books</h1>
+    <table class="issuedTable">
+        <tr>
+            <th>Book</th>
+            <th>User</th>
+            <th>Return By</th>
+        </tr>
+        <!-- Dynamically generated rows will go here -->
+    </table>
+</div>
+
+<!-- The Modal -->
+<div id="allocateModal" class="modal">
+    <!-- Modal content -->
+    <div class="modal-content">
+      <span class="close">&times;</span>
+      <form id="allocateForm">
+        <label for="returnDate">Return Date:</label>
+        <input type="date" id="returnDate" name="returnDate">
+        <input type="hidden" id="selectedBookId" name="bookId">
+        <input type="hidden" id="selectedUserId" name="userId">
+        <button type="submit">Allocate</button>
+      </form>
+    </div>
+  </div>
+
+</body>
+
+<script>
+    // Define showModal and hideModal outside of the DOMContentLoaded listener to ensure they are globally accessible
+function showModal(userId, bookId) {
+    document.getElementById('selectedUserId').value = userId;
+    document.getElementById('selectedBookId').value = bookId;
+    document.getElementById('allocateModal').style.display = "block";
+}
+
+function hideModal() {
+    document.getElementById('allocateModal').style.display = "none";
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Attach event listener for closing modal
+    document.querySelector('.close').addEventListener('click', hideModal);
+
+    // Handle allocation form submission
+    document.getElementById('allocateForm').addEventListener('submit', function(event) {
+        event.preventDefault();
+        // Add code here to handle the form submission, such as updating the issuedBooks array
+        hideModal();
+    });
+
+    // Function to populate requests and add allocate button with showModal event
+    function populateRequests() {
+        const requestTable = document.querySelector('.requestTable');
+        // Clear existing rows except the header
+        while(requestTable.rows.length > 1) requestTable.deleteRow(1);
+        // Assume requests is an array of request objects; replace with your actual data source
+        const requests = [
+            { userId: 'User1', bookId: 'Book1' },
+            { userId: 'User2', bookId: 'Book2' }
+            // Add more request objects as needed
+        ];
+        // Populate table rows
+        requests.forEach(request => {
+            const row = requestTable.insertRow();
+            const userIdCell = row.insertCell(0);
+            const bookIdCell = row.insertCell(1);
+            const actionCell = row.insertCell(2);
+            userIdCell.textContent = request.userId;
+            bookIdCell.textContent = request.bookId;
+            actionCell.innerHTML = `<button onclick="showModal('${request.userId}', '${request.bookId}')">Allocate</button>`;
+        });
+    }
+
+    // Call populateRequests to populate the table with data
+    populateRequests();
+});
+    </script>
+</html>

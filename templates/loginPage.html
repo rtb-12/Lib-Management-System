@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+    /* Utility Classes */
+    .u-text-center {
+        text-align: center;
+    }
+
+    .u-full-width {
+        width: 100%;
+    }
+
+    .u-margin-bottom-small {
+        margin-bottom: 15px;
+    }
+
+    .u-padding-small {
+        padding: 10px;
+    }
+
+    .u-border-round {
+        border-radius: 4px;
+    }
+
+    .u-box-shadow {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Component Classes */
+    .login-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: var(--u-box-shadow);
+    }
+
+    .form-group__label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .form-group__input {
+        padding: var(--u-padding-small);
+        border: 1px solid #ddd;
+        border-radius: var(--u-border-round);
+    }
+
+    .form-group__input--submit {
+        background-color: #007bff;
+        color: white;
+        cursor: pointer;
+    }
+
+    .form-group__input--submit:hover {
+        background-color: #0056b3;
+    }
+
+    /* Layout */
+    .body-container {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+    }
+    </style>
+</head>
+<body class="body-container">
+    <div class="login-container u-text-center">
+        <h2>User Login</h2>
+        <form method="post" action="/admin/login">
+            <div class="form-group u-margin-bottom-small">
+                <label for="username" class="form-group__label">Username:</label>
+                <input type="text" id="username" name="username" class="form-group__input u-full-width" required>
+            </div>
+            <div class="form-group u-margin-bottom-small">
+                <label for="password" class="form-group__label">Password:</label>
+                <input type="password" id="password" name="password" class="form-group__input u-full-width" required>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Login" class="form-group__input form-group__input--submit u-full-width">
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const loginForm = document.querySelector('form');
+        loginForm.onsubmit = function(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Example: Send data using Fetch API
+            fetch('/admin/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username, password }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                // Handle success, e.g., redirect or display a success message
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                // Handle error, e.g., display an error message
+            });
+        };
+    });
+</script>
+</html>

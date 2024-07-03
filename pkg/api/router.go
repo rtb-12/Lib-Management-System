@@ -3,7 +3,7 @@ package api
 import (
 	"net/http"
 
-	"github.com/rtb-12/Lib-Management-System/pkg/controller"
+	controller "github.com/rtb-12/Lib-Management-System/pkg/controller"
 
 	"github.com/gorilla/mux"
 )
@@ -18,6 +18,7 @@ func Start() {
 	r.HandleFunc("/login", controller.Login).Methods("GET")
 	r.HandleFunc("/delete", controller.Delete).Methods("DELETE")
 	r.HandleFunc("/user", controller.User).Methods("GET")
+	r.HandleFunc("/register", controller.Register).Methods("POST")
 	// r.HandleFunc("/update", controller.Update).Methods("PUT")
 	// r.HandleFunc("/requestIssues", controller.requestIssues).Methods("POST")
 	// r.HandleFunc("/issueBook", controller.issueBook).Methods("POST")

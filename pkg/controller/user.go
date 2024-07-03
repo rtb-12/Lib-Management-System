@@ -3,6 +3,7 @@ package controller
 import (
 	"net/http"
 
+	"github.com/rtb-12/Lib-Management-System/pkg/models"
 	"github.com/rtb-12/Lib-Management-System/pkg/views"
 )
 
@@ -13,5 +14,6 @@ func User(writer http.ResponseWriter, request *http.Request) {
 	// 	return
 	// }
 	t := views.UserPage()
-	t.Execute(writer, nil)
+	booksList := models.FetchBooks()
+	t.Execute(writer, booksList)
 }

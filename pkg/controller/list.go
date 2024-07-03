@@ -8,7 +8,6 @@ import (
 )
 
 func List(writer http.ResponseWriter, request *http.Request) {
-	// writer.WriteHeader(http.StatusOK)
 	t := views.ListPage()
 	writer.WriteHeader(http.StatusOK)
 	booksList := models.FetchBooks()

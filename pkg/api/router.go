@@ -5,6 +5,7 @@ import (
 
 	"github.com/gorilla/mux"
 	controller "github.com/rtb-12/Lib-Management-System/pkg/controller"
+	"github.com/rtb-12/Lib-Management-System/pkg/middlewares"
 )
 
 func Start() {
@@ -13,11 +14,11 @@ func Start() {
 	r.HandleFunc("/add", controller.Add).Methods("POST")
 	r.HandleFunc("/list", controller.List).Methods("GET")
 	r.HandleFunc("/admin/login", controller.AdminLogin).Methods("POST")
-	r.HandleFunc("/admin/login", controller.AdminPage).Methods("GET")
+	r.HandleFunc("/admin/login", controller.AdminLoginPage).Methods("GET")
 	r.HandleFunc("/admin/register", controller.RegisterAdminstrator).Methods("POST")
 	r.HandleFunc("/admin/register", controller.AdminRegisterPage).Methods("GET")
 	adminRoute := r.PathPrefix("/admin").Subrouter()
-	adminRoute.Use(controller.AuthMiddleware)
+	adminRoute.Use(middlewares.AdminAuthMiddleware)
 	adminRoute.HandleFunc("", controller.Admin).Methods("GET")
 	r.HandleFunc("/login", controller.Login).Methods("GET")
 	r.HandleFunc("/delete", controller.Delete).Methods("DELETE")

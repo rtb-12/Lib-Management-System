@@ -113,23 +113,24 @@
             }
 
             // Example: Send data using Fetch API
-        fetch('/admin/register', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ name: , email: , password: }),
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            return response.json();
-        })
-        .then(data => {console.log(data)
-            alert('Registration successful!');
-            window.location.href = '/admin/login';})
-        .catch(error => console.error('There has been a problem with your fetch operation:', error));
+            fetch('/admin/register', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ name, email, password }),
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log('Success:', data);
+                // Alert user before redirecting to login page
+                alert("Registration successful! Redirecting to login page.");
+                window.location.href = '/admin/login'; // Adjust the URL as needed
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+                // Handle error, e.g., display an error message
+            });
         };
     });
 </script>

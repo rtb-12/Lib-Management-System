@@ -58,7 +58,7 @@ func AdminLogin(writer http.ResponseWriter, request *http.Request) {
 	writer.Write([]byte(response))
 }
 
-func AdminPage(writer http.ResponseWriter, request *http.Request) {
+func AdminLoginPage(writer http.ResponseWriter, request *http.Request) {
 	t := views.AdminLoginPage()
 	t.Execute(writer, nil)
 }

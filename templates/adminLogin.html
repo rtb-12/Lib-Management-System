@@ -93,7 +93,7 @@
         const loginForm = document.querySelector('form');
         loginForm.onsubmit = function(event) {
             event.preventDefault(); // Prevent the form from submitting the traditional way
-            const email = document.getElemenemail').value;
+            const email = document.getElementById('email').value; // Fixed typo in getElementById
             const password = document.getElementById('password').value;
 
             // Example: Send data using Fetch API

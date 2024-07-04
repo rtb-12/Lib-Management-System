@@ -21,22 +21,24 @@ func Login(writer http.ResponseWriter, request *http.Request) {
 		http.Error(writer, "Error decoding JSON body", http.StatusBadRequest)
 		return
 	}
+
 	var userId int
 	userId, err = models.CheckUser(userLogin)
 	if err != nil {
 		http.Error(writer, fmt.Sprintf("Error finding user: %s", err), http.StatusInternalServerError)
 		return
 	}
+
 	// Generate JWT token
-	secret_key := os.Getenv("JWT_SECRET")
+	secretKey := os.Getenv("JWT_SECRET")
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"userID": strconv.Itoa(int(userId)),
-		"exp":    time.Now().Add(time.Hour * 24).Unix(), // Expires in 24 hours
+		"userID": strconv.Itoa(userId),
+		"exp":    time.Now().Add(time.Hour * 24).Unix(),
 	})
-	token, err := claims.SignedString([]byte(secret_key))
+	token, err := claims.SignedString([]byte(secretKey))
 	if err != nil {
 		fmt.Println("Error generating token:", err)
-		http.Error(writer, fmt.Sprintf("Error generating token : %s", err), http.StatusInternalServerError)
+		http.Error(writer, fmt.Sprintf("Error generating token: %s", err), http.StatusInternalServerError)
 		return
 	}
 
@@ -50,9 +52,10 @@ func Login(writer http.ResponseWriter, request *http.Request) {
 		Secure:   true,
 	}
 	http.SetCookie(writer, &cookie)
-	writer.Header().Set("Content-Type", "application/json")
+
 	writer.WriteHeader(http.StatusOK)
-	response := fmt.Sprintf(`{"message": "user logged in with jwt token", "token": "%s"}`, token)
+	writer.Header().Set("Content-Type", "application/json")
+	response := fmt.Sprintf(`{"message": "User logged in with jwt token", "token": "%s", "userID": "%d"}`, token, userId)
 	writer.Write([]byte(response))
 }
 

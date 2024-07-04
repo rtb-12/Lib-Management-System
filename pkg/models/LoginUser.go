@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 
-	// Add this line to import the package
 	"github.com/rtb-12/Lib-Management-System/pkg/types"
 	"github.com/rtb-12/Lib-Management-System/pkg/utils"
 )
@@ -16,14 +15,8 @@ func CheckUser(user types.UserLogin) (int, error) {
 	}
 	defer db.Close()
 
-	// Hash the user's password
-	hashedPassword, err := utils.GenerateHashPassword(user.Password)
-	if err != nil {
-		return 0, fmt.Errorf("error hashing password: %s", err)
-	}
-
-	// Prepare the SQL statement to select the user ID
-	stmt, err := db.Prepare("SELECT UserID FROM User WHERE Email = ? AND Password_Hash = ?")
+	// Prepare the SQL statement to select the user's hashed password
+	stmt, err := db.Prepare("SELECT UserID, Password_Hash FROM User WHERE Email = ?")
 	if err != nil {
 		return 0, fmt.Errorf("error preparing statement: %s", err)
 	}
@@ -31,17 +24,23 @@ func CheckUser(user types.UserLogin) (int, error) {
 
 	// Execute the SQL statement
 	var userID int
-	err = stmt.QueryRow(user.Email, hashedPassword).Scan(&userID)
+	var storedHash string
+	err = stmt.QueryRow(user.Email).Scan(&userID, &storedHash)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			// User does not exist
-			fmt.Errorf("User does not exist")
-			return 0, nil
+			return 0, fmt.Errorf("User does not exist")
 		}
 		// An error occurred during query execution
 		return 0, fmt.Errorf("error executing statement: %s", err)
 	}
 
-	fmt.Println("User is valid, ID:", userID)
+	// Compare the provided password with the stored hash
+	match := utils.CompareHashPassword(user.Password, storedHash)
+	if !match {
+		return 0, fmt.Errorf("invalid login credentials")
+	}
+
+	// fmt.Println("User is valid, ID:", userID)
 	return userID, nil
 }

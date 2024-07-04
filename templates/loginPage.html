@@ -93,16 +93,16 @@
         const loginForm = document.querySelector('form');
         loginForm.onsubmit = function(event) {
             event.preventDefault(); // Prevent the form from submitting the traditional way
-            const username = document.getElementById('username').value;
+            const email = document.getElementById('username').value;
             const password = document.getElementById('password').value;
-
+            console.log(username + password);
             // Example: Send data using Fetch API
             fetch('/login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({ email, password }),
             })
             .then(response => response.json())
             .then(data => {

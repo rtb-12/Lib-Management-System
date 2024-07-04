@@ -32,7 +32,7 @@ func AdminLogin(writer http.ResponseWriter, request *http.Request) {
 	// Generate JWT token
 	secret_key := os.Getenv("JWT_SECRET")
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"adminID": strconv.Itoa(int(adminID)),
+		"adminID": strconv.Itoa(adminID),
 		"exp":     time.Now().Add(time.Hour * 24).Unix(), // Expires in 24 hours
 	})
 	token, err := claims.SignedString([]byte(secret_key))
@@ -54,7 +54,7 @@ func AdminLogin(writer http.ResponseWriter, request *http.Request) {
 	http.SetCookie(writer, &cookie)
 	writer.WriteHeader(http.StatusOK)
 	writer.Header().Set("Content-Type", "application/json")
-	response := fmt.Sprintf(`{"message": "admin logged in with jwt token", "token": "%s"}`, token)
+	response := fmt.Sprintf(`{"message": "admin logged in with jwt token", "token": "%s", "adminID": "%d"}`, token, adminID)
 	writer.Write([]byte(response))
 }
 

@@ -9,7 +9,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
-func AdminAuthMiddleware(next http.Handler) http.Handler {
+func LoginAuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 		err := godotenv.Load()
 		if err != nil {

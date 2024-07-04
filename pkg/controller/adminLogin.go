@@ -54,7 +54,7 @@ func AdminLogin(writer http.ResponseWriter, request *http.Request) {
 	http.SetCookie(writer, &cookie)
 	writer.WriteHeader(http.StatusOK)
 	writer.Header().Set("Content-Type", "application/json")
-	response := fmt.Sprintf(`{"message": "amdin logged in with jwt token", "token": "%s"}`, token)
+	response := fmt.Sprintf(`{"message": "admin logged in with jwt token", "token": "%s"}`, token)
 	writer.Write([]byte(response))
 }
 

@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login</title>
+    <title>User Registration</title>
     <style>
     /* Utility Classes */
     .u-text-center {
@@ -31,7 +31,7 @@
     }
 
     /* Component Classes */
-    .login-container {
+    .registration-container {
         background-color: white;
         padding: 20px;
         border-radius: 5px;
@@ -50,13 +50,13 @@
     }
 
     .form-group__input--submit {
-        background-color: #007bff;
+        background-color: #28a745;
         color: white;
         cursor: pointer;
     }
 
     .form-group__input--submit:hover {
-        background-color: #0056b3;
+        background-color: #218838;
     }
 
     /* Layout */
@@ -71,45 +71,61 @@
     </style>
 </head>
 <body class="body-container">
-    <div class="login-container u-text-center">
-        <h2>User Login</h2>
-        <form method="post" action="/admin/login">
+    <div class="registration-container u-text-center">
+        <h2>User Registration</h2>
+        <form method="post" action="/admin/register">
             <div class="form-group u-margin-bottom-small">
-                <label for="username" class="form-group__label">Username:</label>
-                <input type="text" id="username" name="username" class="form-group__input u-full-width" required>
+                <label for="name" class="form-group__label">Name:</label>
+                <input type="text" id="name" name="name" class="form-group__input u-full-width" required>
+            </div>
+            <div class="form-group u-margin-bottom-small">
+                <label for="email" class="form-group__label">Email:</label>
+                <input type="email" id="email" name="email" class="form-group__input u-full-width" required>
             </div>
             <div class="form-group u-margin-bottom-small">
                 <label for="password" class="form-group__label">Password:</label>
                 <input type="password" id="password" name="password" class="form-group__input u-full-width" required>
             </div>
+            <div class="form-group u-margin-bottom-small">
+                <label for="confirm-password" class="form-group__label">Confirm Password:</label>
+                <input type="password" id="confirm-password" name="confirmPassword" class="form-group__input u-full-width" required>
+            </div>
             <div class="form-group">
-                <input type="submit" value="Login" class="form-group__input form-group__input--submit u-full-width">
+                <input type="submit" value="Register" class="form-group__input form-group__input--submit u-full-width">
             </div>
         </form>
     </div>
 </body>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        const loginForm = document.querySelector('form');
-        loginForm.onsubmit = function(event) {
+        const registrationForm = document.querySelector('form');
+        registrationForm.onsubmit = function(event) {
             event.preventDefault(); // Prevent the form from submitting the traditional way
-            const username = document.getElementById('username').value;
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            // Example: Validate passwords match
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
+                return; // Stop the form submission
+            }
 
             // Example: Send data using Fetch API
-            fetch('/login', {
+            fetch('/signup', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ username, password }),
+                body: JSON.stringify({ name, email, password }),
             })
             .then(response => response.json())
             .then(data => {
                 console.log('Success:', data);
-                // Handle success, e.g., redirect or display a success message
-                alert("login Successfully");
-                window.location.href = '/user'; 
+                // Alert user before redirecting to login page
+                alert("Registration successful! Redirecting to login page.");
+                window.location.href = '/login'; // Adjust the URL as needed
             })
             .catch((error) => {
                 console.error('Error:', error);

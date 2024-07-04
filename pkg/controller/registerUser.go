@@ -7,6 +7,7 @@ import (
 
 	"github.com/rtb-12/Lib-Management-System/pkg/models"
 	"github.com/rtb-12/Lib-Management-System/pkg/types"
+	"github.com/rtb-12/Lib-Management-System/pkg/views"
 )
 
 func Register(writer http.ResponseWriter, request *http.Request) {
@@ -27,6 +28,22 @@ func Register(writer http.ResponseWriter, request *http.Request) {
 	}
 
 	// Step 3: Respond to the client
+	writer.Header().Set("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusCreated)
-	writer.Write([]byte("User registered successfully"))
+
+	response := map[string]bool{"success": true}
+	jsonResponse, err := json.Marshal(response)
+	if err != nil {
+		// Handle the error properly in a real scenario
+		writer.WriteHeader(http.StatusInternalServerError)
+		writer.Write([]byte("Internal Server Error"))
+		return
+	}
+
+	writer.Write(jsonResponse)
+}
+
+func RegisterPage(writer http.ResponseWriter, request *http.Request) {
+	t := views.UserSignupPage()
+	t.Execute(writer, nil)
 }

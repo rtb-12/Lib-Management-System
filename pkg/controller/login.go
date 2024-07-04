@@ -11,6 +11,7 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/rtb-12/Lib-Management-System/pkg/models"
 	"github.com/rtb-12/Lib-Management-System/pkg/types"
+	"github.com/rtb-12/Lib-Management-System/pkg/views"
 )
 
 func Login(writer http.ResponseWriter, request *http.Request) {
@@ -49,11 +50,13 @@ func Login(writer http.ResponseWriter, request *http.Request) {
 		Secure:   true,
 	}
 	http.SetCookie(writer, &cookie)
-	writer.WriteHeader(http.StatusOK)
 	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
 	response := fmt.Sprintf(`{"message": "user logged in with jwt token", "token": "%s"}`, token)
 	writer.Write([]byte(response))
-	// t := views.LoginPage()
-	// t.Execute(writer, nil)
+}
 
+func LoginPage(writer http.ResponseWriter, request *http.Request) {
+	t := views.LoginPage()
+	t.Execute(writer, nil)
 }

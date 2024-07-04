@@ -29,8 +29,8 @@ func Login(writer http.ResponseWriter, request *http.Request) {
 	// Generate JWT token
 	secret_key := os.Getenv("JWT_SECRET")
 	claims := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
-		"sub": strconv.Itoa(int(userId)),
-		"exp": time.Now().Add(time.Hour * 24).Unix(), // Expires in 24 hours
+		"userID": strconv.Itoa(int(userId)),
+		"exp":    time.Now().Add(time.Hour * 24).Unix(), // Expires in 24 hours
 	})
 	token, err := claims.SignedString([]byte(secret_key))
 	if err != nil {

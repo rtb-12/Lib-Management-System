@@ -24,3 +24,16 @@ type UserLogin struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }
+
+type Admin struct {
+	AdminId  int    `json:"Adminid"`
+	Name     string `json:"name"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}
+
+type AdminLogin struct {
+	AdminId  int    `json:"Adminid"`
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}

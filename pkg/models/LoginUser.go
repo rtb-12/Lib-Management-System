@@ -35,6 +35,7 @@ func CheckUser(user types.UserLogin) (int, error) {
 	if err != nil {
 		if err == sql.ErrNoRows {
 			// User does not exist
+			fmt.Errorf("User does not exist")
 			return 0, nil
 		}
 		// An error occurred during query execution

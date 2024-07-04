@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Registration</title>
+    <style>
+    /* Utility Classes */
+    .u-text-center {
+        text-align: center;
+    }
+
+    .u-full-width {
+        width: 100%;
+    }
+
+    .u-margin-bottom-small {
+        margin-bottom: 15px;
+    }
+
+    .u-padding-small {
+        padding: 10px;
+    }
+
+    .u-border-round {
+        border-radius: 4px;
+    }
+
+    .u-box-shadow {
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    /* Component Classes */
+    .registration-container {
+        background-color: white;
+        padding: 20px;
+        border-radius: 5px;
+        box-shadow: var(--u-box-shadow);
+    }
+
+    .form-group__label {
+        display: block;
+        margin-bottom: 5px;
+    }
+
+    .form-group__input {
+        padding: var(--u-padding-small);
+        border: 1px solid #ddd;
+        border-radius: var(--u-border-round);
+    }
+
+    .form-group__input--submit {
+        background-color: #28a745;
+        color: white;
+        cursor: pointer;
+    }
+
+    .form-group__input--submit:hover {
+        background-color: #218838;
+    }
+
+    /* Layout */
+    .body-container {
+        font-family: Arial, sans-serif;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f0f0f0;
+    }
+    </style>
+</head>
+<body class="body-container">
+    <div class="registration-container u-text-center">
+        <h2>Admin Registration</h2>
+        <form method="post" action="/admin/register">
+            <div class="form-group u-margin-bottom-small">
+                <label for="name" class="form-group__label">Name:</label>
+                <input type="text" id="name" name="name" class="form-group__input u-full-width" required>
+            </div>
+            <div class="form-group u-margin-bottom-small">
+                <label for="email" class="form-group__label">Email:</label>
+                <input type="email" id="email" name="email" class="form-group__input u-full-width" required>
+            </div>
+            <div class="form-group u-margin-bottom-small">
+                <label for="password" class="form-group__label">Password:</label>
+                <input type="password" id="password" name="password" class="form-group__input u-full-width" required>
+            </div>
+            <div class="form-group u-margin-bottom-small">
+                <label for="confirm-password" class="form-group__label">Confirm Password:</label>
+                <input type="password" id="confirm-password" name="confirmPassword" class="form-group__input u-full-width" required>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Register" class="form-group__input form-group__input--submit u-full-width">
+            </div>
+        </form>
+    </div>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const registrationForm = document.querySelector('form');
+        registrationForm.onsubmit = function(event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirm-password').value;
+
+            // Example: Validate passwords match
+            if (password !== confirmPassword) {
+                alert("Passwords do not match.");
+                return; // Stop the form submission
+            }
+
+            // Example: Send data using Fetch API
+        fetch('/admin/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ name: , email: , password: }),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {console.log(data)
+            alert('Registration successful!');
+            window.location.href = '/admin/login';})
+        .catch(error => console.error('There has been a problem with your fetch operation:', error));
+        };
+    });
+</script>
+</html>

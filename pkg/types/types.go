@@ -1,11 +1,11 @@
 package types
 
 type BookInfo struct {
-	ID                int    `json:"id"`
-	Title             string `json:"title"`
-	Author            string `json:"author"`
-	Genre             string `json:"genre"`
-	QuantityAvailable int    `json:"quantityAvailable"`
+	ID     int    `json:"id"`
+	Title  string `json:"title"`
+	Author string `json:"author"`
+	Genre  string `json:"genre"`
+	Stock  int    `json:"stock"`
 }
 
 type ListBooks struct {
@@ -29,11 +29,10 @@ type Admin struct {
 	AdminId  int    `json:"Adminid"`
 	Name     string `json:"name"`
 	Email    string `json:"email"`
-	Password string `json:"password"`
+	Password string `password`
 }
-
 type AdminLogin struct {
-	AdminId  int    `json:"Adminid"`
+	AdminId  int    `json:"adminid"`
 	Email    string `json:"email"`
 	Password string `json:"password"`
 }

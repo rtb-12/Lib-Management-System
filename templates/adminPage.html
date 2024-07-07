@@ -108,20 +108,63 @@
 </style>
 <body>
 
-<div class="catalogContainer">
-    <h1>Catalog of Books</h1>
-    <table class="catalogTable">
-        <tr>
-            <th>Title</th>
-            <th>Author</th>
-            <th>Stock</th>
-            <th>Edit</th>
-        </tr>
-        <!-- Dynamically generated rows will go here -->
-    </table>
-</div>
+    <div class="catalogContainer">
+        <h1>Catalog of Books</h1>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#addBookModal">
+            Add Book
+        </button>
+        <table class="catalogTable">
+            <tr>
+                <th>ID</th>
+                <th>Title</th>
+                <th>Author</th>
+                <th>Genre</th>
+                <th>Stock</th>
+                <th>Edit</th>
+            </tr>
+            <!-- Dynamically generated rows will go here -->
+        </table>
+    </div>
+    
+    <!-- Modal -->
+    <div class="modal fade" id="addBookModal" tabindex="-1" role="dialog" aria-labelledby="addBookModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addBookModalLabel">Add New Book</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="addBookForm">
+                        <div class="form-group">
+                            <label for="bookTitle">Title</label>
+                            <input type="text" class="form-control" id="bookTitle" placeholder="Enter book title">
+                        </div>
+                        <div class="form-group">
+                            <label for="bookAuthor">Author</label>
+                            <input type="text" class="form-control" id="bookAuthor" placeholder="Enter author's name">
+                        </div>
+                        <div class="form-group">
+                            <label for="bookGenre">Genre</label>
+                            <input type="text" class="form-control" id="bookGenre" placeholder="Enter Genre">
+                        </div>
+                        <div class="form-group">
+                            <label for="bookStock">Stock</label>
+                            <input type="number" class="form-control" id="bookStock" placeholder="Enter stock quantity">
+                        </div>
+                        <!-- Add more fields as necessary -->
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" form="addBookForm">Add Book</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-<div class="requestContainer">
+{% comment %} <div class="requestContainer">
     <h1>Requested Books to Issue</h1>
     <table class="requestTable">
         <tr>
@@ -158,58 +201,92 @@
         <button type="submit">Allocate</button>
       </form>
     </div>
-  </div>
+  </div> {% endcomment %}
 
 </body>
+<!-- Include jQuery -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!-- Include Bootstrap JS (make sure to include Popper.js for Bootstrap v4 if needed) -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
 <script>
-    // Define showModal and hideModal outside of the DOMContentLoaded listener to ensure they are globally accessible
-function showModal(userId, bookId) {
-    document.getElementById('selectedUserId').value = userId;
-    document.getElementById('selectedBookId').value = bookId;
-    document.getElementById('allocateModal').style.display = "block";
-}
-
-function hideModal() {
-    document.getElementById('allocateModal').style.display = "none";
-}
-
+    // Function to show the add book modal
+    function showModal() {
+        $('#addBookModal').modal('show'); // Using Bootstrap's modal function
+    }
+    
+    // Function to hide the add book modal
+    function hideModal() {
+        $('#addBookModal').modal('hide'); // Using Bootstrap's modal function
+    }
+    
+    // Fetch and display the catalog of books
+    function fetchCatalog() {
+        fetch('/list')
+            .then(response => response.json())
+            .then(data => {
+                const books = data.books; // Adjusted to handle the response structure
+                const tableBody = document.querySelector('.catalogTable tbody');
+                tableBody.innerHTML = ''; // Clear existing rows
+                books.forEach(book => {
+                    const row = `<tr>
+                                    <td>${book.id}</td>
+                                    <td>${book.title}</td>
+                                    <td>${book.author}</td>
+                                    <td>${book.genre}</td> <!-- Added genre based on your JSON structure -->
+                                    <td>${book.stock}</td>
+                                    <td><button class="editLink" onclick="showModal()">Edit</button></td>
+                                 </tr>`;
+                    tableBody.innerHTML += row;
+                });
+            })
+            .catch(error => console.error('Error fetching catalog:', error));
+    }
+    
+    // Ensure the script runs after the DOM is fully loaded
 document.addEventListener('DOMContentLoaded', function() {
-    // Attach event listener for closing modal
-    document.querySelector('.close').addEventListener('click', hideModal);
-
-    // Handle allocation form submission
-    document.getElementById('allocateForm').addEventListener('submit', function(event) {
-        event.preventDefault();
-        // Add code here to handle the form submission, such as updating the issuedBooks array
-        hideModal();
-    });
-
-    // Function to populate requests and add allocate button with showModal event
-    function populateRequests() {
-        const requestTable = document.querySelector('.requestTable');
-        // Clear existing rows except the header
-        while(requestTable.rows.length > 1) requestTable.deleteRow(1);
-        // Assume requests is an array of request objects; replace with your actual data source
-        const requests = [
-            { userId: 'User1', bookId: 'Book1' },
-            { userId: 'User2', bookId: 'Book2' }
-            // Add more request objects as needed
-        ];
-        // Populate table rows
-        requests.forEach(request => {
-            const row = requestTable.insertRow();
-            const userIdCell = row.insertCell(0);
-            const bookIdCell = row.insertCell(1);
-            const actionCell = row.insertCell(2);
-            userIdCell.textContent = request.userId;
-            bookIdCell.textContent = request.bookId;
-            actionCell.innerHTML = `<button onclick="showModal('${request.userId}', '${request.bookId}')">Allocate</button>`;
+    var addBookForm = document.getElementById('addBookForm');
+    if (addBookForm) {
+        addBookForm.addEventListener('submit', function(event) {
+            console.log('Adding book...');
+            event.preventDefault();
+            const bookData = {
+                "title": document.getElementById('bookTitle').value,
+                "author": document.getElementById('bookAuthor').value,
+                "genre": document.getElementById('bookGenre').value,
+                "stock": parseInt(document.getElementById('bookStock').value, 10)
+            };
+        
+            fetch('/addbook', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bookData),
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                console.log('Success:', data);
+                // Assuming hideModal() and fetchCatalog() are defined elsewhere
+                hideModal();
+                fetchCatalog(); // Refresh the catalog to include the new book
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
         });
     }
-
-    // Call populateRequests to populate the table with data
-    populateRequests();
 });
+    
+    // Initial fetch of the catalog
+    document.addEventListener('DOMContentLoaded', function() {
+        fetchCatalog();
+    });
     </script>
 </html>

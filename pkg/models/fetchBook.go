@@ -11,7 +11,7 @@ func FetchBooks() types.ListBooks {
 	if err != nil {
 		fmt.Printf("error %s connecting to the database", err)
 	}
-	selectSql := "SELECT * FROM book_info WHERE QuantityAvailable>0"
+	selectSql := "SELECT * FROM book_info"
 	rows, err := db.Query(selectSql)
 	db.Close()
 
@@ -22,7 +22,7 @@ func FetchBooks() types.ListBooks {
 	var fetchBooks []types.BookInfo
 	for rows.Next() {
 		var book types.BookInfo
-		err := rows.Scan(&book.ID, &book.Title, &book.Author, &book.Genre, &book.QuantityAvailable)
+		err := rows.Scan(&book.ID, &book.Title, &book.Author, &book.Genre, &book.Stock)
 		if err != nil {
 			fmt.Printf("error %s scanning the row", err)
 		}

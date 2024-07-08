@@ -45,8 +45,8 @@ func AddBook(book types.BookInfo) (bool, error) {
 		}
 	} else {
 		fmt.Println("Book already exists")
-		var ErrBookExists = errors.New("Book already exists")
-		return false, ErrBookExists
+		var errBookExists = errors.New("book already exists")
+		return false, errBookExists
 	}
 }
 
@@ -102,4 +102,106 @@ func DeleteBook(book types.BookInfo) (bool, error) {
 		fmt.Println("Book does not exist")
 		return false, nil
 	}
+}
+
+func CreateBookIssueRequest(info types.BookIssueRequest) (bool, error) {
+	db, err := Connection()
+	if err != nil {
+		fmt.Printf("error %s connecting to the database\n", err)
+		return false, err
+	}
+	defer db.Close()
+
+	// Check if the book exists before attempting to delete
+	isBookExists := checkBookExists(info.Book)
+
+	if isBookExists {
+		insertSql := "INSERT INTO book_issue_request (UserID, BookID, Status) VALUES (?, ?, ?)"
+		_, err = db.Exec(insertSql, info.UserID, info.Book.ID, info.Status)
+		if err != nil {
+			fmt.Printf("error %s inserting into the database\n", err)
+			return false, err
+		} else {
+			fmt.Printf("successfully inserted book issue request into the database\n")
+			return true, nil
+		}
+	} else {
+		fmt.Println("Book does not exist")
+		return false, nil
+	}
+}
+
+func IssueBook(info types.BookIssue) (bool, error) {
+	db, err := Connection()
+	if err != nil {
+		fmt.Printf("error %s connecting to the database\n", err)
+		return false, err
+	}
+	defer db.Close()
+	inserSql := "INSERT INTO IssuedBook (UserID, BookID, AdminID, IssueDate,ReturnDate,isReturned) VALUES (?, ?, ?, ?,?,false)"
+	_, err = db.Exec(inserSql, info.UserID, info.Book.ID, info.AdminID, info.IssueDate, info.ReturnDate)
+	if err != nil {
+		fmt.Printf("error %s inserting into the database\n", err)
+		return false, err
+	} else {
+		updateSql := "UPDATE book_info SET Stock = Stock - 1 WHERE BookID = ?"
+		_, err = db.Exec(updateSql, info.Book.ID)
+		if err != nil {
+			fmt.Printf("error %s updating the stock\n", err)
+			return false, err
+		}
+		updateStatusSql := "UPDATE book_issue_request SET Status = ? WHERE UserID = ? AND BookID = ?"
+		_, err = db.Exec(updateStatusSql, types.Accepted, info.UserID, info.Book.ID)
+		if err != nil {
+			fmt.Printf("error %s updating the status\n", err)
+			return false, err
+		}
+		fmt.Printf("successfully inserted book issue request into the database\n")
+		return true, nil
+	}
+
+}
+
+func ReturnBook(info types.BookIssue) (bool, error) {
+	db, err := Connection()
+	if err != nil {
+		fmt.Printf("error %s connecting to the database\n", err)
+		return false, err
+	}
+	defer db.Close()
+	inserSql := "UPDATE IssuedBook SET isReturned = ? WHERE UserID = ? AND BookID = ?"
+	_, err = db.Exec(inserSql, true, info.UserID, info.Book.ID)
+	if err != nil {
+		fmt.Printf("error %s updatin the database for book return\n", err)
+		return false, err
+	} else {
+		updateSql := "UPDATE book_info SET Stock = Stock + 1 WHERE BookID = ?"
+		_, err = db.Exec(updateSql, info.Book.ID)
+		if err != nil {
+			fmt.Printf("error %s updating the stock\n", err)
+			return false, err
+		}
+		fmt.Printf("successfully inserted book issue request into the database\n")
+		return true, nil
+	}
+
+}
+
+func RejectBookIssueRequest(info types.BookIssueRequest) (bool, error) {
+	db, err := Connection()
+	if err != nil {
+		fmt.Printf("error %s connecting to the database\n", err)
+		return false, err
+	}
+	defer db.Close()
+	inserSql := "UPDATE book_info SET Status = ? WHERE UserID = ? AND BookID = ?"
+	_, err = db.Exec(inserSql, types.Rejected, info.UserID, info.Book.ID)
+	if err != nil {
+		fmt.Printf("error %s updating the database\n", err)
+		return false, err
+	} else {
+		fmt.Printf("successfully rejected book issue request into the database\n")
+		return true, nil
+	}
+
 }

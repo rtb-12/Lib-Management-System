@@ -80,3 +80,110 @@ func DeleteBook(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 	}
 }
+
+func List(writer http.ResponseWriter, request *http.Request) {
+	booksList := models.FetchBooks() // Assuming FetchBooks returns a slice of books
+
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+
+	if err := json.NewEncoder(writer).Encode(booksList); err != nil {
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+}
+
+func RequestBookIssue(writer http.ResponseWriter, request *http.Request) {
+	var issueRequest types.BookIssueRequest
+	err := json.NewDecoder(request.Body).Decode(&issueRequest)
+	if err != nil {
+		fmt.Print("There was an error decoding the request body into the struct")
+	}
+
+	isBookRequested, err := models.CreateBookIssueRequest(issueRequest)
+	if err != nil {
+		fmt.Printf("Error requesting book: %s\n", err)
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if isBookRequested {
+		writer.WriteHeader(http.StatusOK)
+		writer.Header().Set("Content-Type", "application/json")
+		response := fmt.Sprintf(`{"message": "Book Requested", "BookName": "%s", "BookID": "%d", "UserId":"%d" , "Status":"%s"  }`, issueRequest.Book.Title, issueRequest.Book.ID, issueRequest.UserID, issueRequest.Status)
+		writer.Write([]byte(response))
+	} else {
+		writer.WriteHeader(http.StatusBadRequest)
+	}
+
+}
+
+func RejectBookIssueRequest(writer http.ResponseWriter, request *http.Request) {
+	var issueRequest types.BookIssueRequest
+	err := json.NewDecoder(request.Body).Decode(&issueRequest)
+	if err != nil {
+		fmt.Print("There was an error decoding the request body into the struct")
+	}
+
+	isBookRequestRejected, err := models.RejectBookIssueRequest(issueRequest)
+	if err != nil {
+		fmt.Printf("Error rejecting book issue request: %s\n", err)
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if isBookRequestRejected {
+		writer.WriteHeader(http.StatusOK)
+		writer.Header().Set("Content-Type", "application/json")
+		response := fmt.Sprintf(`{"message": "Book Request Rejected", "BookName": "%s", "BookID": "%d", "UserId":"%d" , "Status":"%s"  }`, issueRequest.Book.Title, issueRequest.Book.ID, issueRequest.UserID, issueRequest.Status)
+		writer.Write([]byte(response))
+	} else {
+		writer.WriteHeader(http.StatusBadRequest)
+
+	}
+}
+
+func IssueBook(writer http.ResponseWriter, request *http.Request) {
+	var issueRequest types.BookIssue
+	err := json.NewDecoder(request.Body).Decode(&issueRequest)
+	if err != nil {
+		fmt.Print("There was an error decoding the request body into the struct")
+	}
+
+	isBookIssued, err := models.IssueBook(issueRequest)
+	if err != nil {
+		fmt.Printf("Error issuing book: %s\n", err)
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if isBookIssued {
+		writer.WriteHeader(http.StatusOK)
+		writer.Header().Set("Content-Type", "application/json")
+		response := fmt.Sprintf(`{"message": "Book Issued", "BookName": "%s", "BookID": "%d", "UserId":"%d"   }`, issueRequest.Book.Title, issueRequest.Book.ID, issueRequest.UserID)
+		writer.Write([]byte(response))
+	} else {
+		writer.WriteHeader(http.StatusBadRequest)
+	}
+}
+
+func ReturnBookRequest(writer http.ResponseWriter, request *http.Request) {
+
+	var issueRequest types.BookIssue
+	err := json.NewDecoder(request.Body).Decode(&issueRequest)
+	if err != nil {
+		fmt.Print("There was an error decoding the request body into the struct")
+	}
+
+	isBookReturned, err := models.ReturnBook(issueRequest)
+	if err != nil {
+		fmt.Printf("Error returning book: %s\n", err)
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+	if isBookReturned {
+		writer.WriteHeader(http.StatusOK)
+		writer.Header().Set("Content-Type", "application/json")
+		response := fmt.Sprintf(`{"message": "Book Returned", "BookName": "%s", "BookID": "%d", "UserId":"%d"   }`, issueRequest.Book.Title, issueRequest.Book.ID, issueRequest.UserID)
+		writer.Write([]byte(response))
+	} else {
+		writer.WriteHeader(http.StatusBadRequest)
+	}
+}

@@ -43,18 +43,18 @@ type RequestStatus string
 
 const (
 	Pending  RequestStatus = "pending"
-	Accepted RequestStatus = "accepted"
+	Approved RequestStatus = "approved"
 	Rejected RequestStatus = "rejected"
 )
 
 type BookIssueRequest struct {
-	Book   BookInfo      `json:"bookInfo"`
+	Book   BookInfo      `json:"book"`
 	UserID int           `json:"userId"`
 	Status RequestStatus `json:"status"`
 }
 
 type BookIssue struct {
-	Book       BookInfo  `json:"bookInfo"`
+	Book       BookInfo  `json:"book"`
 	UserID     int       `json:"userId"`
 	AdminID    int       `json:"adminId"`
 	IssueDate  time.Time `json:"issueDate"`

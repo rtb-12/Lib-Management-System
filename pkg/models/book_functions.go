@@ -116,7 +116,7 @@ func CreateBookIssueRequest(info types.BookIssueRequest) (bool, error) {
 	isBookExists := checkBookExists(info.Book)
 
 	if isBookExists {
-		insertSql := "INSERT INTO book_issue_request (UserID, BookID, Status) VALUES (?, ?, ?)"
+		insertSql := "INSERT INTO IssueRequest (UserID, BookID, Status) VALUES (?, ?, ?)"
 		_, err = db.Exec(insertSql, info.UserID, info.Book.ID, info.Status)
 		if err != nil {
 			fmt.Printf("error %s inserting into the database\n", err)
@@ -150,8 +150,8 @@ func IssueBook(info types.BookIssue) (bool, error) {
 			fmt.Printf("error %s updating the stock\n", err)
 			return false, err
 		}
-		updateStatusSql := "UPDATE book_issue_request SET Status = ? WHERE UserID = ? AND BookID = ?"
-		_, err = db.Exec(updateStatusSql, types.Accepted, info.UserID, info.Book.ID)
+		updateStatusSql := "UPDATE IssueRequest SET Status = ? WHERE UserID = ? AND BookID = ?"
+		_, err = db.Exec(updateStatusSql, types.Approved, info.UserID, info.Book.ID)
 		if err != nil {
 			fmt.Printf("error %s updating the status\n", err)
 			return false, err
@@ -172,7 +172,7 @@ func ReturnBook(info types.BookIssue) (bool, error) {
 	inserSql := "UPDATE IssuedBook SET isReturned = ? WHERE UserID = ? AND BookID = ?"
 	_, err = db.Exec(inserSql, true, info.UserID, info.Book.ID)
 	if err != nil {
-		fmt.Printf("error %s updatin the database for book return\n", err)
+		fmt.Printf("error %s updating the database for book return\n", err)
 		return false, err
 	} else {
 		updateSql := "UPDATE book_info SET Stock = Stock + 1 WHERE BookID = ?"

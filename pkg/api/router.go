@@ -35,7 +35,7 @@ func Start() {
 	r.HandleFunc("/signup", controller.Register).Methods("POST")
 	r.HandleFunc("/signup", controller.RegisterPage).Methods("GET")
 	r.HandleFunc("/requestbookissuet", controller.RequestBookIssue).Methods("POST")
-	r.HandleFunc("/bookissue", controller.IssueBook).Methods("GET")
+	r.HandleFunc("/bookissue", controller.IssueBook).Methods("POST")
 	r.HandleFunc("/bookreturn", controller.ReturnBookRequest).Methods("POST")
 	r.HandleFunc("/rejectbookissue", controller.RejectBookIssueRequest).Methods("POST")
 	http.ListenAndServe("localhost:8000", r)

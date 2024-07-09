@@ -187,3 +187,27 @@ func ReturnBookRequest(writer http.ResponseWriter, request *http.Request) {
 		writer.WriteHeader(http.StatusBadRequest)
 	}
 }
+
+func FetchBookIssueRequests(writer http.ResponseWriter, request *http.Request) {
+	booksIssueRequestsList := models.FetchBookIssueRequests()
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+
+	if err := json.NewEncoder(writer).Encode(booksIssueRequestsList); err != nil {
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+}
+
+func FetchBookIssuedList(writer http.ResponseWriter, request *http.Request) {
+	booksIssuedList := models.FetchBookIssuedBookIssued()
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+
+	if err := json.NewEncoder(writer).Encode(booksIssuedList); err != nil {
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+}

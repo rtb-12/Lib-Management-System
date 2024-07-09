@@ -21,6 +21,34 @@ func checkBookExists(book types.BookInfo) bool {
 	}
 	return true
 }
+func FetchBooks() types.ListBooks {
+	db, err := Connection()
+	if err != nil {
+		fmt.Printf("error %s connecting to the database", err)
+	}
+	selectSql := "SELECT * FROM book_info"
+	rows, err := db.Query(selectSql)
+	db.Close()
+
+	if err != nil {
+		fmt.Printf("error %s querying the database", err)
+	}
+
+	var fetchBooks []types.BookInfo
+	for rows.Next() {
+		var book types.BookInfo
+		err := rows.Scan(&book.ID, &book.Title, &book.Author, &book.Genre, &book.Stock)
+		if err != nil {
+			fmt.Printf("error %s scanning the row", err)
+		}
+		fetchBooks = append(fetchBooks, book)
+	}
+
+	var listBooks types.ListBooks
+	listBooks.Books = fetchBooks
+	return listBooks
+
+}
 
 func AddBook(book types.BookInfo) (bool, error) {
 	db, err := Connection()
@@ -203,5 +231,58 @@ func RejectBookIssueRequest(info types.BookIssueRequest) (bool, error) {
 		fmt.Printf("successfully rejected book issue request into the database\n")
 		return true, nil
 	}
+
+}
+
+func FetchBookIssueRequests() types.ListBookIssueResponse {
+	db, err := Connection()
+	if err != nil {
+		fmt.Printf("error %s connecting to the database", err)
+	}
+	selectSql := "SELECT * FROM IssueRequest"
+	rows, err := db.Query(selectSql)
+	db.Close()
+
+	if err != nil {
+		fmt.Printf("error %s querying the database", err)
+	}
+
+	var bookIssueRequests []types.BookIssueResponse
+	for rows.Next() {
+		var request types.BookIssueResponse
+		err := rows.Scan(&request.RequestId, &request.UserID, &request.BookId, &request.Status)
+		if err != nil {
+			fmt.Printf("error %s scanning the row", err)
+		}
+		bookIssueRequests = append(bookIssueRequests, request)
+	}
+
+	var listBookIssueRequests types.ListBookIssueResponse
+	listBookIssueRequests.BookIssueRequests = bookIssueRequests
+	return listBookIssueRequests
+}
+
+func FetchBookIssuedBookIssued() types.ListBookIssued {
+	db, err := Connection()
+	if err != nil {
+		fmt.Printf("error %s connecting to the database", err)
+	}
+	selectSql := "SELECT * FROM IssuedBook"
+	rows, err := db.Query(selectSql)
+	db.Close()
+
+	var bookIssuedBookList []types.BookIssuedDB
+	for rows.Next() {
+		var issued types.BookIssuedDB
+		err := rows.Scan(&issued.IssuedId, &issued.UserID, &issued.BookID, &issued.AdminID, &issued.IssueDate, &issued.ReturnDate, &issued.IsReturned)
+		if err != nil {
+			fmt.Printf("error %s scanning the row", err)
+		}
+		bookIssuedBookList = append(bookIssuedBookList, issued)
+	}
+
+	var listBookIssued types.ListBookIssued
+	listBookIssued.BooksIssued = bookIssuedBookList
+	return listBookIssued
 
 }

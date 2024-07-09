@@ -53,10 +53,34 @@ type BookIssueRequest struct {
 	Status RequestStatus `json:"status"`
 }
 
+type BookIssueResponse struct {
+	RequestId int           `json:"requestId"`
+	BookId    int           `json:"bookId"`
+	UserID    int           `json:"userId"`
+	Status    RequestStatus `json:"status"`
+}
+type ListBookIssueResponse struct {
+	BookIssueRequests []BookIssueResponse `json:"bookIssueRequests"`
+}
+
 type BookIssue struct {
 	Book       BookInfo  `json:"book"`
 	UserID     int       `json:"userId"`
 	AdminID    int       `json:"adminId"`
 	IssueDate  time.Time `json:"issueDate"`
 	ReturnDate time.Time `json:"returnDate"`
+}
+
+type BookIssuedDB struct {
+	IssuedId   int       `json:"issuedId"`
+	BookID     int       `json:"bookId"`
+	UserID     int       `json:"userId"`
+	AdminID    int       `json:"adminId"`
+	IssueDate  time.Time `json:"issueDate"`
+	ReturnDate time.Time `json:"returnDate"`
+	IsReturned bool      `json:"isReturned"`
+}
+
+type ListBookIssued struct {
+	BooksIssued []BookIssuedDB `json:"bookIssued"`
 }

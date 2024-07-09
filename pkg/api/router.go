@@ -38,5 +38,7 @@ func Start() {
 	r.HandleFunc("/bookissue", controller.IssueBook).Methods("POST")
 	r.HandleFunc("/bookreturn", controller.ReturnBookRequest).Methods("POST")
 	r.HandleFunc("/rejectbookissue", controller.RejectBookIssueRequest).Methods("POST")
+	r.HandleFunc("/fetchbookissuerequests", controller.FetchBookIssueRequests).Methods("GET")
+	r.HandleFunc("/fetchissuedbooklist", controller.FetchBookIssuedList).Methods("GET")
 	http.ListenAndServe("localhost:8000", r)
 }

@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Page</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
 </head>
 <style>
     /* Container Styles */
@@ -14,6 +15,8 @@
         padding: 10px;
         border-radius: 5px; /* Rounded corners */
         box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
+        height: 400px;
+         overflow-y: auto;
     }
 
     /* Table Styles */
@@ -72,7 +75,7 @@
 .modal {
   display: none; /* Hidden by default */
   position: fixed; /* Stay in place */
-  z-index: 1; /* Sit on top */
+  z-index: 1050; /* Sit on top */
   left: 0;
   top: 0;
   width: 100%; /* Full width */
@@ -127,7 +130,7 @@
     </div>
     
     <!-- Modal -->
-    <div class="modal fade" id="addBookModal" tabindex="-1" role="dialog" aria-labelledby="addBookModalLabel" aria-hidden="true">
+    <div class="modal "  id="addBookModal" tabindex="2" role="dialog" aria-labelledby="addBookModalLabel" aria-hidden="true">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
@@ -154,7 +157,7 @@
                             <label for="bookStock">Stock</label>
                             <input type="number" class="form-control" id="bookStock" placeholder="Enter stock quantity">
                         </div>
-                        <!-- Add more fields as necessary -->
+                        
                     </form>
                 </div>
                 <div class="modal-footer">
@@ -164,44 +167,126 @@
         </div>
     </div>
 
-{% comment %} <div class="requestContainer">
+
+    <div class="modal "  id="editBookModal" tabindex="2" role="dialog" aria-labelledby="editBookModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="addBookModalLabel">Edit Book</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="editBookForm">
+                        <div class="form-group">
+                            <label for="bookTitle">Title</label>
+                            <input type="text" class="form-control" id="editTitle" placeholder="Edit book title">
+                        </div>
+                        <div class="form-group">
+                            <label for="bookAuthor">Author</label>
+                            <input type="text" class="form-control" id="editAuthor" placeholder="Edit author's name">
+                        </div>
+                        <div class="form-group">
+                            <label for="bookGenre">Genre</label>
+                            <input type="text" class="form-control" id="editGenre" placeholder="Edit Genre">
+                        </div>
+                        <div class="form-group">
+                            <label for="bookStock">Stock</label>
+                            <input type="number" class="form-control" id="editStock" placeholder="Edit stock quantity">
+                        </div>
+
+                        <input type="hidden" id="editId" name="editId">
+                        
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-primary" form="editBookForm">Submit</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="requestContainer">
     <h1>Requested Books to Issue</h1>
     <table class="requestTable">
         <tr>
             <th>User ID</th>
             <th>Book ID</th>
+            <th>Status</th>
             <th>Allocate</th>
         </tr>
         <!-- Dynamically generated rows will go here -->
     </table>
 </div>
 
+<!-- Allocate Modal -->
+<div class="modal fade" id="allocateModal" tabindex="-1" role="dialog" aria-labelledby="allocateModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="allocateModalLabel">Allocate Book</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <form id="allocateForm">
+            <div class="form-group">
+              <label for="returnDate">Return Date:</label>
+              <input type="date" class="form-control" id="returnDate" name="returnDate">
+            </div>
+            <input type="hidden" id="selectedBookId" name="bookId">
+            <input type="hidden" id="selectedUserId" name="userId">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="reject" class="btn btn-danger" onclick="allocateForm">Reject Request</button>
+          <button type="submit" class="btn btn-primary" form="allocateForm">Allocate</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
 <div class="issuedContainer">
     <h1>Issued Books</h1>
     <table class="issuedTable">
         <tr>
-            <th>Book</th>
-            <th>User</th>
+            <th>IssueId</th>
+            <th>BookID</th>
+            <th>UserID</th>
+            <th>Issued On</th>
             <th>Return By</th>
+            <th>Return </th>
         </tr>
         <!-- Dynamically generated rows will go here -->
     </table>
 </div>
 
-<!-- The Modal -->
-<div id="allocateModal" class="modal">
-    <!-- Modal content -->
-    <div class="modal-content">
-      <span class="close">&times;</span>
-      <form id="allocateForm">
-        <label for="returnDate">Return Date:</label>
-        <input type="date" id="returnDate" name="returnDate">
-        <input type="hidden" id="selectedBookId" name="bookId">
-        <input type="hidden" id="selectedUserId" name="userId">
-        <button type="submit">Allocate</button>
-      </form>
+<div class="modal fade" id="ReturnConfirmModal" tabindex="-1" role="dialog" aria-labelledby="ReturnConfirmModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="ReturnConfirmModalLabel">Confirm ?</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <!-- Start form tag here to include both modal-body and modal-footer -->
+        <form id="ReturnConfirmForm">
+          <div class="modal-body">
+            <input type="hidden" id="ReturnIssueId" name="issueId">
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary"form="ReturnConfirmForm">Confirm</button>
+          </div>
+        </form>
+      </div>
     </div>
-  </div> {% endcomment %}
+  </div>
 
 </body>
 <!-- Include jQuery -->
@@ -213,12 +298,15 @@
 <script>
     // Function to show the add book modal
     function showModal() {
-        $('#addBookModal').modal('show'); // Using Bootstrap's modal function
+        $('#addBookModal').modal('show');
+        $('#allocateModal').modal('show');
+   
     }
     
     // Function to hide the add book modal
     function hideModal() {
-        $('#addBookModal').modal('hide'); // Using Bootstrap's modal function
+        $('#addBookModal').modal('hide');
+        $('#allocateModal').modal('hide'); n
     }
     
     // Fetch and display the catalog of books
@@ -228,24 +316,151 @@
             .then(data => {
                 const books = data.books; // Adjusted to handle the response structure
                 const tableBody = document.querySelector('.catalogTable tbody');
-                tableBody.innerHTML = ''; // Clear existing rows
+    
                 books.forEach(book => {
-                    const row = `<tr>
-                                    <td>${book.id}</td>
-                                    <td>${book.title}</td>
-                                    <td>${book.author}</td>
-                                    <td>${book.genre}</td> <!-- Added genre based on your JSON structure -->
-                                    <td>${book.stock}</td>
-                                    <td><button class="editLink" onclick="showModal()">Edit</button></td>
-                                 </tr>`;
-                    tableBody.innerHTML += row;
+                    const row = tableBody.insertRow();
+                    const bookIdCell = row.insertCell();
+                    const bookTitleCell = row.insertCell();
+                    const authorCell = row.insertCell();
+                    const genreCell = row.insertCell();
+                    const stockCell = row.insertCell();
+                    const editLink = row.insertCell();
+                    bookIdCell.textContent = book.id;
+                    bookTitleCell.textContent = book.title;
+                    authorCell.textContent = book.author;
+                    genreCell.textContent = book.genre;
+                    stockCell.textContent = book.stock;
+                    editLink.innerHTML = `<button class="editLink" data-toggle="modal" data-target="#editBookModal" data-id="${book.id}" data-title="${book.title}" data-author="${book.author}" data-genre="${book.genre}" data-stock="${book.stock}">Edit</button>`;document.addEventListener('click', function(e) {
+                    document.addEventListener('click', function(e) {
+                            if (e.target && e.target.classList.contains('editLink')) {
+                                // Fetch data attributes from the clicked button
+                                const id = e.target.getAttribute('data-id');
+                                const title = e.target.getAttribute('data-title');
+                                const author = e.target.getAttribute('data-author');
+                                const genre = e.target.getAttribute('data-genre');
+                                const stock = e.target.getAttribute('data-stock');
+                        
+                                // Set values for the modal input fields
+                                // Assuming the modal input fields have IDs: #editId, #editTitle, #editAuthor, #editGenre, and #editStock
+                                document.getElementById('editId').value = id;
+                                document.getElementById('editTitle').value = title;
+                                document.getElementById('editAuthor').value = author;
+                                document.getElementById('editGenre').value = genre;
+                                document.getElementById('editStock').value = stock;
+                            }
+                        });
+                    });
                 });
             })
             .catch(error => console.error('Error fetching catalog:', error));
     }
     
-    // Ensure the script runs after the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', function() {
+    function fetchRequestedBook() {
+        fetch('/fetchbookissuerequests')
+        .then(response => response.json())
+        .then(data => {
+            const table = document.querySelector('.requestTable');
+            data.bookIssueRequests.forEach(request => {
+                const row = table.insertRow();
+                const userIdCell = row.insertCell();
+                const bookIdCell = row.insertCell();
+                const statusCell = row.insertCell();
+                const allocateCell = row.insertCell();
+    
+                userIdCell.textContent = request.userId;
+                bookIdCell.textContent = request.bookId;
+                statusCell.textContent = request.status;
+                allocateCell.innerHTML = `<button type="button" class="btn btn-primary allocate-btn" data-toggle="modal" data-target="#allocateModal" data-bookid="${request.bookId}" data-userid="${request.userId}">Allocate</button>`;
+            });
+    
+            document.querySelectorAll('.allocate-btn').forEach(button => {
+                button.addEventListener('click', function() {
+                    const bookId = this.getAttribute('data-bookid');
+                    const userId = this.getAttribute('data-userid');
+                    document.getElementById('selectedBookId').value = bookId;
+                    document.getElementById('selectedUserId').value = userId;
+                });
+            });
+        })
+        .catch(error => console.error('Error:', error));
+    }
+
+    function fetchIssuedBooks(){
+        fetch('/fetchissuedbooklist')
+        .then(response => response.json())
+        .then(data => {
+            const table = document.querySelector('.issuedTable');
+            data.bookIssued.forEach(issuedBook => {
+                const row = table.insertRow();
+                const issueCell=row.insertCell();
+                const bookCell = row.insertCell();
+                const userCell = row.insertCell();
+                const issueDateCell = row.insertCell(); 
+                const returnByCell = row.insertCell();
+                const returnCell = row.insertCell();
+
+                // Format dates
+                const issueDate = new Date(issuedBook.issueDate);
+                const returnDate = new Date(issuedBook.returnDate);
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+
+                issueCell.textContent =issuedBook.issuedId;
+                bookCell.textContent = issuedBook.bookId;
+                userCell.textContent = issuedBook.userId;
+                issueDateCell.textContent = issueDate.toLocaleDateString(undefined, options);
+                returnByCell.textContent = returnDate.toLocaleDateString(undefined, options); 
+                returnCell.innerHTML = `<button type="button" class="btn btn-primary return-btn" data-toggle="modal" data-target="#ReturnConfirmModal" data-issueid="${issuedBook.issuedId}">Return</button>`;
+                document.querySelectorAll('.return-btn').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const issueId = this.getAttribute('data-issueid');
+                        document.getElementById('ReturnIssueId').value = issueId;
+                                   
+                    });
+                });
+           
+            });
+        })
+    }
+
+    function Returnbook(){
+        var returnBook = document.getElementById('ReturnConfirmForm');
+        if (returnBook) {
+            returnBook.addEventListener('submit', function(event) {
+                console.log('Returning book...');
+                event.preventDefault();
+                const today = new Date();
+                const formattedDate = today.toISOString().substr(0, 10);
+                const returnData = {
+                    "issueId":parseInt( document.getElementById("ReturnIssueId").value,10),
+                    "returnDate": formattedDate+"T00:00:00Z"
+                };
+                fetch('/bookreturn', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(returnData),
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    }
+                    throw new Error('Network response was not ok.');
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    hideModal(); // Ensure this function is defined elsewhere
+                    fetchIssuedBooks();
+                    window.location.reload(); // Ensure this function is defined elsewhere
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            });
+        }
+    
+    }
+function AddBook() {
     var addBookForm = document.getElementById('addBookForm');
     if (addBookForm) {
         addBookForm.addEventListener('submit', function(event) {
@@ -274,19 +489,173 @@ document.addEventListener('DOMContentLoaded', function() {
             .then(data => {
                 console.log('Success:', data);
                 // Assuming hideModal() and fetchCatalog() are defined elsewhere
+                
                 hideModal();
-                fetchCatalog(); // Refresh the catalog to include the new book
+                fetchCatalog(); 
+                window.location.reload();// Refresh the catalog to include the new book
             })
             .catch((error) => {
                 console.error('Error:', error);
             });
         });
     }
-});
+}
+
+function EditBook() {
+    var editBookForm = document.getElementById('editBookForm');
+    if (editBookForm) {
+        editBookForm.addEventListener('submit', function(event) {
+            console.log('Editing book...');
+            event.preventDefault();
+            const bookData = {
+                "id":parseInt(document.getElementById('editId').value,10),
+                "title": document.getElementById('editTitle').value,
+                "author": document.getElementById('editAuthor').value,
+                "genre": document.getElementById('editGenre').value,
+                "stock": parseInt(document.getElementById('editStock').value, 10)
+            };
+        
+            fetch('/updatebook', {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(bookData),
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                console.log('Success:', data);
+                // Assuming hideModal() and fetchCatalog() are defined elsewhere
+                
+                hideModal();
+                fetchCatalog(); 
+                window.location.reload();// Refresh the catalog to include the new book
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    }
+}
+
+function getAdminIdFromJwt() {
+    // Step 1: Retrieve the JWT token from the cookie named 'jwt'
+    const jwtCookie = document.cookie.split('; ').find(row => row.startsWith('jwt='));
+    if (!jwtCookie) {
+        console.log('JWT cookie not found');
+        return null;
+    }
+    const jwtToken = jwtCookie.split('=')[1];
+
+    // Step 2: Decode the JWT token to access its payload
+    const base64Url = jwtToken.split('.')[1]; // Get the payload part
+    const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); // Convert base64url to base64
+    const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
+
+    // Step 3: Extract the adminID value from the payload
+    const payload = JSON.parse(jsonPayload);
+    const adminID = payload.adminID; // Assuming the payload contains an adminID field
+    return adminID;
+}
+
+function AllocateBook() {
+    var allocateBook = document.getElementById('allocateForm'); // Corrected 'vsr' to 'var'
+    if (allocateBook) {
+        allocateBook.addEventListener('submit', function(event) {
+            console.log('Allocating book...');
+            event.preventDefault();
+            const today = new Date();
+            const formattedDate = today.toISOString().substr(0, 10);
+            const allocationData = {
+                "adminId": parseInt(getAdminIdFromJwt(), 10),
+                "userId":parseInt( document.getElementById("selectedBookId").value,10),
+                "bookId": parseInt(document.getElementById("selectedUserId").value,10),
+                "issueDate": formattedDate+"T00:00:00Z",
+                "returnDate": document.getElementById('returnDate').value+"T00:00:00Z"
+            };
+            fetch('/allocatebook', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(allocationData),
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                console.log('Success:', data);
+               
+                hideModal(); // Ensure this function is defined elsewhere
+                fetchRequestedBook();
+                window.location.reload(); // Ensure this function is defined elsewhere
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    }
+}
+
+function RejectAllocateBookRequest() {
+    var allocateBook = document.getElementById('allocateForm'); // Corrected 'vsr' to 'var'
+    if (allocateBook) {
+        allocateBook.addEventListener('reject', function(event) {
+            console.log('Allocating book...');
+            event.preventDefault();
+            const today = new Date();
+            const formattedDate = today.toISOString().substr(0, 10);
+            const allocationData = {
+                "userId":parseInt( document.getElementById("selectedBookId").value,10),
+                "bookId": parseInt(document.getElementById("selectedUserId").value,10),
+            };
+            fetch('/rejectbookissue', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(allocationData),
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                }
+                throw new Error('Network response was not ok.');
+            })
+            .then(data => {
+                console.log('Success:', data);
+               
+                hideModal(); // Ensure this function is defined elsewhere
+                fetchRequestedBook();
+                window.location.reload(); // Ensure this function is defined elsewhere
+            })
+            .catch((error) => {
+                console.error('Error:', error);
+            });
+        });
+    }
+}
     
     // Initial fetch of the catalog
     document.addEventListener('DOMContentLoaded', function() {
         fetchCatalog();
+        AddBook();
+        fetchRequestedBook();
+        AllocateBook();
+        fetchIssuedBooks();
+        Returnbook();
+        EditBook();
+        RejectAllocateBookRequest()
     });
     </script>
 </html>

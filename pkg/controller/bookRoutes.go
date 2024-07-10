@@ -109,7 +109,7 @@ func RequestBookIssue(writer http.ResponseWriter, request *http.Request) {
 	if isBookRequested {
 		writer.WriteHeader(http.StatusOK)
 		writer.Header().Set("Content-Type", "application/json")
-		response := fmt.Sprintf(`{"message": "Book Requested", "BookName": "%s", "BookID": "%d", "UserId":"%d" , "Status":"%s"  }`, issueRequest.Book.Title, issueRequest.Book.ID, issueRequest.UserID, issueRequest.Status)
+		response := fmt.Sprintf(`{"message": "Book Requested", "BookName": "%s", "BookID": "%d", "UserId":"%d"  }`, issueRequest.Book.Title, issueRequest.Book.ID, issueRequest.UserID)
 		writer.Write([]byte(response))
 	} else {
 		writer.WriteHeader(http.StatusBadRequest)
@@ -118,7 +118,7 @@ func RequestBookIssue(writer http.ResponseWriter, request *http.Request) {
 }
 
 func RejectBookIssueRequest(writer http.ResponseWriter, request *http.Request) {
-	var issueRequest types.BookIssueRequest
+	var issueRequest types.RejectBookIssueRequest
 	err := json.NewDecoder(request.Body).Decode(&issueRequest)
 	if err != nil {
 		fmt.Print("There was an error decoding the request body into the struct")
@@ -133,7 +133,7 @@ func RejectBookIssueRequest(writer http.ResponseWriter, request *http.Request) {
 	if isBookRequestRejected {
 		writer.WriteHeader(http.StatusOK)
 		writer.Header().Set("Content-Type", "application/json")
-		response := fmt.Sprintf(`{"message": "Book Request Rejected", "BookName": "%s", "BookID": "%d", "UserId":"%d" , "Status":"%s"  }`, issueRequest.Book.Title, issueRequest.Book.ID, issueRequest.UserID, issueRequest.Status)
+		response := fmt.Sprintf(`{"message": "Book Request Rejected",  "BookID": "%d", "UserId":"%d"   }`, issueRequest.BookID, issueRequest.UserID)
 		writer.Write([]byte(response))
 	} else {
 		writer.WriteHeader(http.StatusBadRequest)
@@ -157,7 +157,7 @@ func IssueBook(writer http.ResponseWriter, request *http.Request) {
 	if isBookIssued {
 		writer.WriteHeader(http.StatusOK)
 		writer.Header().Set("Content-Type", "application/json")
-		response := fmt.Sprintf(`{"message": "Book Issued", "BookName": "%s", "BookID": "%d", "UserId":"%d"   }`, issueRequest.Book.Title, issueRequest.Book.ID, issueRequest.UserID)
+		response := fmt.Sprintf(`{"message": "Book Issued", "BookID": "%d", "UserId":"%d"   }`, issueRequest.BookID, issueRequest.UserID)
 		writer.Write([]byte(response))
 	} else {
 		writer.WriteHeader(http.StatusBadRequest)
@@ -166,7 +166,7 @@ func IssueBook(writer http.ResponseWriter, request *http.Request) {
 
 func ReturnBookRequest(writer http.ResponseWriter, request *http.Request) {
 
-	var issueRequest types.BookIssue
+	var issueRequest types.BookReturn
 	err := json.NewDecoder(request.Body).Decode(&issueRequest)
 	if err != nil {
 		fmt.Print("There was an error decoding the request body into the struct")
@@ -181,7 +181,7 @@ func ReturnBookRequest(writer http.ResponseWriter, request *http.Request) {
 	if isBookReturned {
 		writer.WriteHeader(http.StatusOK)
 		writer.Header().Set("Content-Type", "application/json")
-		response := fmt.Sprintf(`{"message": "Book Returned", "BookName": "%s", "BookID": "%d", "UserId":"%d"   }`, issueRequest.Book.Title, issueRequest.Book.ID, issueRequest.UserID)
+		response := fmt.Sprintf(`{"message": "Book Returned", "IssuedID": "%d", "ReturnDate":"%s"   }`, issueRequest.IssuedId, issueRequest.ReturnDate)
 		writer.Write([]byte(response))
 	} else {
 		writer.WriteHeader(http.StatusBadRequest)

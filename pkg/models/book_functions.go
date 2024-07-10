@@ -145,7 +145,7 @@ func CreateBookIssueRequest(info types.BookIssueRequest) (bool, error) {
 
 	if isBookExists {
 		insertSql := "INSERT INTO IssueRequest (UserID, BookID, Status) VALUES (?, ?, ?)"
-		_, err = db.Exec(insertSql, info.UserID, info.Book.ID, info.Status)
+		_, err = db.Exec(insertSql, info.UserID, info.Book.ID, types.Pending)
 		if err != nil {
 			fmt.Printf("error %s inserting into the database\n", err)
 			return false, err
@@ -167,19 +167,19 @@ func IssueBook(info types.BookIssue) (bool, error) {
 	}
 	defer db.Close()
 	inserSql := "INSERT INTO IssuedBook (UserID, BookID, AdminID, IssueDate,ReturnDate,isReturned) VALUES (?, ?, ?, ?,?,false)"
-	_, err = db.Exec(inserSql, info.UserID, info.Book.ID, info.AdminID, info.IssueDate, info.ReturnDate)
+	_, err = db.Exec(inserSql, info.UserID, info.BookID, info.AdminID, info.IssueDate, info.ReturnDate)
 	if err != nil {
 		fmt.Printf("error %s inserting into the database\n", err)
 		return false, err
 	} else {
 		updateSql := "UPDATE book_info SET Stock = Stock - 1 WHERE BookID = ?"
-		_, err = db.Exec(updateSql, info.Book.ID)
+		_, err = db.Exec(updateSql, info.BookID)
 		if err != nil {
 			fmt.Printf("error %s updating the stock\n", err)
 			return false, err
 		}
 		updateStatusSql := "UPDATE IssueRequest SET Status = ? WHERE UserID = ? AND BookID = ?"
-		_, err = db.Exec(updateStatusSql, types.Approved, info.UserID, info.Book.ID)
+		_, err = db.Exec(updateStatusSql, types.Approved, info.UserID, info.BookID)
 		if err != nil {
 			fmt.Printf("error %s updating the status\n", err)
 			return false, err
@@ -190,21 +190,21 @@ func IssueBook(info types.BookIssue) (bool, error) {
 
 }
 
-func ReturnBook(info types.BookIssue) (bool, error) {
+func ReturnBook(info types.BookReturn) (bool, error) {
 	db, err := Connection()
 	if err != nil {
 		fmt.Printf("error %s connecting to the database\n", err)
 		return false, err
 	}
 	defer db.Close()
-	inserSql := "UPDATE IssuedBook SET isReturned = ? WHERE UserID = ? AND BookID = ?"
-	_, err = db.Exec(inserSql, true, info.UserID, info.Book.ID)
+	inserSql := "UPDATE IssuedBook SET isReturned = ?, ReturnDate = ? WHERE IssuedId= ?"
+	_, err = db.Exec(inserSql, true, info.ReturnDate, info.IssuedId)
 	if err != nil {
 		fmt.Printf("error %s updating the database for book return\n", err)
 		return false, err
 	} else {
-		updateSql := "UPDATE book_info SET Stock = Stock + 1 WHERE BookID = ?"
-		_, err = db.Exec(updateSql, info.Book.ID)
+		updateSql := "UPDATE book_info SET Stock = Stock + 1 WHERE BookID = (SELECT BookID FROM IssuedBook WHERE IssuedId = ?)"
+		_, err = db.Exec(updateSql, info.IssuedId)
 		if err != nil {
 			fmt.Printf("error %s updating the stock\n", err)
 			return false, err
@@ -215,7 +215,7 @@ func ReturnBook(info types.BookIssue) (bool, error) {
 
 }
 
-func RejectBookIssueRequest(info types.BookIssueRequest) (bool, error) {
+func RejectBookIssueRequest(info types.RejectBookIssueRequest) (bool, error) {
 	db, err := Connection()
 	if err != nil {
 		fmt.Printf("error %s connecting to the database\n", err)
@@ -223,7 +223,7 @@ func RejectBookIssueRequest(info types.BookIssueRequest) (bool, error) {
 	}
 	defer db.Close()
 	inserSql := "UPDATE book_info SET Status = ? WHERE UserID = ? AND BookID = ?"
-	_, err = db.Exec(inserSql, types.Rejected, info.UserID, info.Book.ID)
+	_, err = db.Exec(inserSql, types.Rejected, info.UserID, info.BookID)
 	if err != nil {
 		fmt.Printf("error %s updating the database\n", err)
 		return false, err
@@ -239,7 +239,7 @@ func FetchBookIssueRequests() types.ListBookIssueResponse {
 	if err != nil {
 		fmt.Printf("error %s connecting to the database", err)
 	}
-	selectSql := "SELECT * FROM IssueRequest"
+	selectSql := "SELECT * FROM IssueRequest WHERE Status = 'pending'"
 	rows, err := db.Query(selectSql)
 	db.Close()
 
@@ -267,7 +267,7 @@ func FetchBookIssuedBookIssued() types.ListBookIssued {
 	if err != nil {
 		fmt.Printf("error %s connecting to the database", err)
 	}
-	selectSql := "SELECT * FROM IssuedBook"
+	selectSql := "SELECT * FROM IssuedBook WHERE isReturned = false"
 	rows, err := db.Query(selectSql)
 	db.Close()
 

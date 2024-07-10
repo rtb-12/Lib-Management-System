@@ -48,9 +48,13 @@ const (
 )
 
 type BookIssueRequest struct {
-	Book   BookInfo      `json:"book"`
-	UserID int           `json:"userId"`
-	Status RequestStatus `json:"status"`
+	Book   BookInfo `json:"book"`
+	UserID int      `json:"userId"`
+}
+
+type RejectBookIssueRequest struct {
+	BookID int `json:"bookId"`
+	UserID int `json:"userId"`
 }
 
 type BookIssueResponse struct {
@@ -64,13 +68,16 @@ type ListBookIssueResponse struct {
 }
 
 type BookIssue struct {
-	Book       BookInfo  `json:"book"`
+	BookID     int       `json:"bookId"`
 	UserID     int       `json:"userId"`
 	AdminID    int       `json:"adminId"`
 	IssueDate  time.Time `json:"issueDate"`
 	ReturnDate time.Time `json:"returnDate"`
 }
-
+type BookReturn struct {
+	IssuedId   int       `json:"issueId"`
+	ReturnDate time.Time `json:"returnDate"`
+}
 type BookIssuedDB struct {
 	IssuedId   int       `json:"issuedId"`
 	BookID     int       `json:"bookId"`

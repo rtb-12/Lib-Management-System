@@ -48,8 +48,8 @@ const (
 )
 
 type BookIssueRequest struct {
-	Book   BookInfo `json:"book"`
-	UserID int      `json:"userId"`
+	BookID int `jsnon:"bookId"`
+	UserID int `json:"userId"`
 }
 
 type RejectBookIssueRequest struct {
@@ -90,4 +90,8 @@ type BookIssuedDB struct {
 
 type ListBookIssued struct {
 	BooksIssued []BookIssuedDB `json:"bookIssued"`
+}
+
+type UserID struct {
+	UserId int `json:"userId"`
 }

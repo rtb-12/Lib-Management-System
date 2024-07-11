@@ -1,96 +1,247 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>User Dashboard - Library System</title>
-</head>
-<style>
+  </head>
+  <style>
     /* General body styling */
-body {
-    font-family: Arial, sans-serif;
-    margin: 0;
-    padding: 0;
-    background-color: #f4f4f4;
-}
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f4f4f4;
+    }
 
-header {
-    background-color: #007bff;
-    color: white;
-    padding: 20px;
-    text-align: center;
-}
+    header {
+      background-color: #007bff;
+      color: white;
+      padding: 20px;
+      text-align: center;
+    }
 
-main {
-    padding: 20px;
-}
+    main {
+      padding: 20px;
+    }
 
-/* Catalog section styling */
-#catalog {
-    margin-top: 20px;
-}
+    /* Catalog section styling */
+    #catalog {
+      margin-top: 20px;
+    }
 
-.books {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: center;
-}
-
-.book {
-    background-color: white;
-    border: 1px solid #ddd;
-    padding: 15px;
-    width: 200px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    border-radius: 5px;
-}
-
-.book h3 {
-    margin-top: 0;
-}
-
-.book p {
-    font-size: 14px;
-    color: #666;
-}
-
-/* Responsive adjustments */
-@media (max-width: 600px) {
     .books {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      height: 400px; /* Example fixed height */
+      overflow-y: auto; /* Enables vertical scrolling */
+    }
+
+    .book {
+      background-color: white;
+      border: 1px solid #ddd;
+      padding: 15px;
+      width: 200px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      border-radius: 5px;
+    }
+
+    .book h3 {
+      margin-top: 0;
+    }
+
+    .book p {
+      font-size: 14px;
+      color: #666;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 600px) {
+      .books {
         flex-direction: column;
         align-items: center;
+      }
     }
-}
-</style>
-<body>
+
+    #issued-books {
+        margin: 20px;
+        padding: 10px;
+      }
+      
+      #issued-books h1 {
+        text-align: center;
+        color: #333;
+        font-family: Arial, sans-serif;
+      }
+      
+      .issuedTable {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 20px;
+        box-shadow: 0 2px 3px rgba(0,0,0,0.1);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      }
+      
+      .issuedTable th, .issuedTable td {
+        padding: 10px;
+        border: 1px solid #ddd;
+        text-align: left;
+      }
+      
+      .issuedTable th {
+        background-color: #007bff;
+        color: white;
+      }
+      
+      .issuedTable tr:nth-child(even) {
+        background-color: #f2f2f2;
+      }
+      
+      .issuedTable tr:hover {
+        background-color: #ddd;
+      }
+    
+  </style>
+  <body>
     <header>
-        <h1>Library System</h1>
+      <h1>Library System</h1>
     </header>
     <main>
-        <section id="catalog">
-            <h2>Book Catalog</h2>
-            <div class="books">
-                {{ range .Books }}
-                <div class="book">
-                    <h3>{{ .Title }}</h3>
-                    <p>Author: {{ .Author }}</p>
-                    <button>Issue Book</button>
-                </div>
-                {{ end }}
-            </div>
-        </section>
-        <section id="issued-books">
-            <h2>Issued Books</h2>
-            <ul>
-                <!-- Example Issued Book -->
-                <li>
-                    <span>Book Title by Author Name</span>
-                    <span>Due Date: YYYY-MM-DD</span>
-                </li>
-                <!-- Repeat for each issued book -->
-            </ul>
-        </section>
+      <section id="catalog">
+        <h2>Book Catalog</h2>
+        <div class="books">
+          {{ range .Books }}
+          <div class="book">
+            <h3>{{ .Title }}</h3>
+            <p>Author: {{ .Author }}</p>
+            <p>
+              BookID: {{ .ID}}
+              <button class="issueBookButton" data-bookid="{{ .ID }}">
+                Issue Book
+              </button>
+            </p>
+          </div>
+
+          {{ end }}
+        </div>
+      </section>
+      <section id="issued-books">
+        <h1>Issued Books</h1>
+        <table class="issuedTable">
+          <tr>
+            <th>IssueId</th>
+            <th>BookID</th>
+            <th>UserID</th>
+            <th>Issued On</th>
+            <th>Return By</th>
+          </tr>
+          <!-- Dynamically generated rows will go here -->
+        </table>
+      </section>
     </main>
-</body>
+  </body>
+  <script>
+    function fetchIssuedBooks(){
+        // Assuming UserID is stored in a variable named userID
+        const userID = getUserIdFromJwt(); // Implement getUserID to retrieve UserID
+    
+        fetch('/fetchbookissueduser', {
+            method: 'POST', // Specify the method
+            headers: {
+                'Content-Type': 'application/json', // Specify the content type
+            },
+            body: JSON.stringify({ "UserID": parseInt(userID,10) }) // Send UserID in the request body
+        })
+        .then(response => response.json())
+        .then(data => {
+            const table = document.querySelector('.issuedTable');
+            data.bookIssued.forEach(issuedBook => {
+                const row = table.insertRow();
+                const issueCell = row.insertCell();
+                const bookCell = row.insertCell();
+                const userCell = row.insertCell();
+                const issueDateCell = row.insertCell(); 
+                const returnByCell = row.insertCell();
+                const returnCell = row.insertCell(); // Note: returnCell is created but not used
+    
+                // Format dates
+                const issueDate = new Date(issuedBook.issueDate);
+                const returnDate = new Date(issuedBook.returnDate);
+                const options = { year: 'numeric', month: 'long', day: 'numeric' };
+    
+                issueCell.textContent = issuedBook.issuedId;
+                bookCell.textContent = issuedBook.bookId;
+                userCell.textContent = issuedBook.userId;
+                issueDateCell.textContent = issueDate.toLocaleDateString(undefined, options);
+                returnByCell.textContent = returnDate.toLocaleDateString(undefined, options); 
+            });
+        });
+    }
+
+    function getUserIdFromJwt() {
+        // Step 1: Retrieve the JWT token from the cookie named 'jwt'
+        const jwtCookie = document.cookie.split('; ').find(row => row.startsWith('jwt='));
+        if (!jwtCookie) {
+            console.log('JWT cookie not found');
+            return null;
+        }
+        const jwtToken = jwtCookie.split('=')[1];
+
+        // Step 2: Decode the JWT token to access its payload
+        const base64Url = jwtToken.split('.')[1]; // Get the payload part
+        const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/'); // Convert base64url to base64
+        const jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+            return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+        }).join(''));
+
+        // Step 3: Extract the userID value from the payload
+        const payload = JSON.parse(jsonPayload);
+        const userID=payload.userID; // Assuming the payload contains an userID field
+        return userID;
+    }
+    function IssueBook() {
+        // Attach the event listener to the document or a static parent of the buttons
+        document.addEventListener('click', function(event) {
+            console.log("click")
+            // Check if the clicked element has the class 'issueBookButton'
+            if (event.target && event.target.matches(".issueBookButton")) {
+                const button = event.target;
+
+                // Get userID from JWT
+                const userID = parseInt(getUserIdFromJwt(), 10);
+                // Get bookID from the data attribute of the clicked button
+                const bookID = parseInt(button.getAttribute("data-bookid"), 10);
+    
+                fetch('/requestbookissue', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ "BookID": bookID, "UserID": userID }),
+                })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('Success:', data);
+                    alert('Book Issue Request Sent to Admin')
+                    // Handle success, maybe redirect or show a message.
+                })
+                .catch((error) => {
+                    console.error('Error:', error);
+                });
+            }
+        });
+    }
+    
+    document.addEventListener('DOMContentLoaded', function() {
+        IssueBook();
+        fetchIssuedBooks();
+    });
+  </script>
 </html>

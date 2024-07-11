@@ -45,11 +45,11 @@ func Login(writer http.ResponseWriter, request *http.Request) {
 	// Set JWT token in cookie
 	expiration := time.Now().Add(24 * time.Hour)
 	cookie := http.Cookie{
-		Name:     "jwt",
-		Value:    token,
-		Expires:  expiration,
-		HttpOnly: true,
-		Secure:   true,
+		Name:    "jwt",
+		Value:   token,
+		Expires: expiration,
+		// HttpOnly: true,
+		// Secure:   true,
 	}
 	http.SetCookie(writer, &cookie)
 

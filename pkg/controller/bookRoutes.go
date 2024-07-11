@@ -109,7 +109,7 @@ func RequestBookIssue(writer http.ResponseWriter, request *http.Request) {
 	if isBookRequested {
 		writer.WriteHeader(http.StatusOK)
 		writer.Header().Set("Content-Type", "application/json")
-		response := fmt.Sprintf(`{"message": "Book Requested", "BookName": "%s", "BookID": "%d", "UserId":"%d"  }`, issueRequest.Book.Title, issueRequest.Book.ID, issueRequest.UserID)
+		response := fmt.Sprintf(`{"message": "Book Requested", "BookID": "%d", "UserId":"%d"  }`, issueRequest.BookID, issueRequest.UserID)
 		writer.Write([]byte(response))
 	} else {
 		writer.WriteHeader(http.StatusBadRequest)
@@ -202,6 +202,24 @@ func FetchBookIssueRequests(writer http.ResponseWriter, request *http.Request) {
 
 func FetchBookIssuedList(writer http.ResponseWriter, request *http.Request) {
 	booksIssuedList := models.FetchBookIssuedBookIssued()
+	writer.Header().Set("Content-Type", "application/json")
+	writer.WriteHeader(http.StatusOK)
+
+	if err := json.NewEncoder(writer).Encode(booksIssuedList); err != nil {
+		http.Error(writer, err.Error(), http.StatusInternalServerError)
+		return
+	}
+
+}
+
+func FetchBookIssuedOfUser(writer http.ResponseWriter, request *http.Request) {
+	var user types.UserID
+	err := json.NewDecoder(request.Body).Decode(&user)
+	if err != nil {
+		fmt.Print("There was an error decoding the request body into the struct")
+	}
+
+	booksIssuedList := models.FetchBookIssuedOfUser(user)
 	writer.Header().Set("Content-Type", "application/json")
 	writer.WriteHeader(http.StatusOK)
 

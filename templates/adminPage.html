@@ -16,7 +16,7 @@
         border-radius: 5px; /* Rounded corners */
         box-shadow: 0 2px 4px rgba(0,0,0,0.1); /* Subtle shadow */
         height: 400px;
-         overflow-y: auto;
+        overflow-y: auto;
     }
 
     /* Table Styles */
@@ -241,7 +241,7 @@
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          <button type="reject" class="btn btn-danger" onclick="allocateForm">Reject Request</button>
+          <button type="button" class="btn btn-danger" id="rejectButton">Reject Request</button>
           <button type="submit" class="btn btn-primary" form="allocateForm">Allocate</button>
           </form>
         </div>
@@ -575,8 +575,8 @@ function AllocateBook() {
             const formattedDate = today.toISOString().substr(0, 10);
             const allocationData = {
                 "adminId": parseInt(getAdminIdFromJwt(), 10),
-                "userId":parseInt( document.getElementById("selectedBookId").value,10),
-                "bookId": parseInt(document.getElementById("selectedUserId").value,10),
+                "userId":parseInt( document.getElementById("selectedUserId").value,10),
+                "bookId": parseInt(document.getElementById("selectedBookId").value,10),
                 "issueDate": formattedDate+"T00:00:00Z",
                 "returnDate": document.getElementById('returnDate').value+"T00:00:00Z"
             };
@@ -608,16 +608,14 @@ function AllocateBook() {
 }
 
 function RejectAllocateBookRequest() {
-    var allocateBook = document.getElementById('allocateForm'); // Corrected 'vsr' to 'var'
-    if (allocateBook) {
-        allocateBook.addEventListener('reject', function(event) {
-            console.log('Allocating book...');
+    var rejectButton = document.getElementById('rejectButton');
+    if (rejectButton) {
+        rejectButton.addEventListener('click', function(event) {
+            console.log('Rejecting book request...');
             event.preventDefault();
-            const today = new Date();
-            const formattedDate = today.toISOString().substr(0, 10);
             const allocationData = {
-                "userId":parseInt( document.getElementById("selectedBookId").value,10),
-                "bookId": parseInt(document.getElementById("selectedUserId").value,10),
+                "userId": parseInt(document.getElementById("selectedUserId").value, 10),
+                "bookId": parseInt(document.getElementById("selectedBookId").value, 10),
             };
             fetch('/rejectbookissue', {
                 method: 'POST',
@@ -634,10 +632,9 @@ function RejectAllocateBookRequest() {
             })
             .then(data => {
                 console.log('Success:', data);
-               
-                hideModal(); // Ensure this function is defined elsewhere
+                hideModal();
                 fetchRequestedBook();
-                window.location.reload(); // Ensure this function is defined elsewhere
+                window.location.reload();
             })
             .catch((error) => {
                 console.error('Error:', error);

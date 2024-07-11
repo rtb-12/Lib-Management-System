@@ -140,22 +140,14 @@ func CreateBookIssueRequest(info types.BookIssueRequest) (bool, error) {
 	}
 	defer db.Close()
 
-	// Check if the book exists before attempting to delete
-	isBookExists := checkBookExists(info.Book)
-
-	if isBookExists {
-		insertSql := "INSERT INTO IssueRequest (UserID, BookID, Status) VALUES (?, ?, ?)"
-		_, err = db.Exec(insertSql, info.UserID, info.Book.ID, types.Pending)
-		if err != nil {
-			fmt.Printf("error %s inserting into the database\n", err)
-			return false, err
-		} else {
-			fmt.Printf("successfully inserted book issue request into the database\n")
-			return true, nil
-		}
+	insertSql := "INSERT INTO IssueRequest (UserID, BookID, Status) VALUES (?, ?, ?)"
+	_, err = db.Exec(insertSql, info.UserID, info.BookID, types.Pending)
+	if err != nil {
+		fmt.Printf("error %s inserting into the database\n", err)
+		return false, err
 	} else {
-		fmt.Println("Book does not exist")
-		return false, nil
+		fmt.Printf("successfully inserted book issue request into the database\n")
+		return true, nil
 	}
 }
 
@@ -222,7 +214,7 @@ func RejectBookIssueRequest(info types.RejectBookIssueRequest) (bool, error) {
 		return false, err
 	}
 	defer db.Close()
-	inserSql := "UPDATE book_info SET Status = ? WHERE UserID = ? AND BookID = ?"
+	inserSql := "UPDATE IssueRequest SET Status = ? WHERE UserID = ? AND BookID = ?"
 	_, err = db.Exec(inserSql, types.Rejected, info.UserID, info.BookID)
 	if err != nil {
 		fmt.Printf("error %s updating the database\n", err)
@@ -269,6 +261,31 @@ func FetchBookIssuedBookIssued() types.ListBookIssued {
 	}
 	selectSql := "SELECT * FROM IssuedBook WHERE isReturned = false"
 	rows, err := db.Query(selectSql)
+	db.Close()
+
+	var bookIssuedBookList []types.BookIssuedDB
+	for rows.Next() {
+		var issued types.BookIssuedDB
+		err := rows.Scan(&issued.IssuedId, &issued.UserID, &issued.BookID, &issued.AdminID, &issued.IssueDate, &issued.ReturnDate, &issued.IsReturned)
+		if err != nil {
+			fmt.Printf("error %s scanning the row", err)
+		}
+		bookIssuedBookList = append(bookIssuedBookList, issued)
+	}
+
+	var listBookIssued types.ListBookIssued
+	listBookIssued.BooksIssued = bookIssuedBookList
+	return listBookIssued
+
+}
+
+func FetchBookIssuedOfUser(userID types.UserID) types.ListBookIssued {
+	db, err := Connection()
+	if err != nil {
+		fmt.Printf("error %s connecting to the database", err)
+	}
+	selectSql := "SELECT * FROM IssuedBook WHERE UserID = ?"
+	rows, err := db.Query(selectSql, userID.UserId)
 	db.Close()
 
 	var bookIssuedBookList []types.BookIssuedDB

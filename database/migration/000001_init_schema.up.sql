@@ -1,0 +1,44 @@
+CREATE TABLE IF NOT EXISTS Admin (
+    AdminID INT NOT NULL AUTO_INCREMENT,
+    Name VARCHAR(255) NOT NULL,
+    Email VARCHAR(255) NOT NULL UNIQUE,
+    Password_Hash VARCHAR(255) NOT NULL,
+    PRIMARY KEY (AdminID)
+);
+CREATE TABLE IF NOT EXISTS IssueRequest (
+    RequestID INT NOT NULL AUTO_INCREMENT,
+    UserID INT,
+    BookID INT,
+    Status ENUM('Pending', 'Approved', 'Rejected') NOT NULL,
+    PRIMARY KEY (RequestID),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (BookID) REFERENCES Books(BookID)
+);
+CREATE TABLE IF NOT EXISTS IssuedBook (
+    IssuedID INT NOT NULL AUTO_INCREMENT,
+    BookID INT,
+    UserID INT,
+    AdminID INT,
+    IssueDate DATE NOT NULL,
+    ReturnDate DATE,
+    isReturned TINYINT(1),
+    PRIMARY KEY (IssuedID),
+    FOREIGN KEY (BookID) REFERENCES Books(BookID),
+    FOREIGN KEY (UserID) REFERENCES Users(UserID),
+    FOREIGN KEY (AdminID) REFERENCES Admin(AdminID)
+);
+CREATE TABLE IF NOT EXISTS User (
+    UserID INT NOT NULL AUTO_INCREMENT,
+    Name VARCHAR(255) NOT NULL,
+    Email VARCHAR(255) NOT NULL UNIQUE,
+    Password_Hash VARCHAR(255),
+    PRIMARY KEY (UserID)
+);
+CREATE TABLE IF NOT EXISTS book_info (
+    BookID INT NOT NULL AUTO_INCREMENT,
+    Title VARCHAR(255) NOT NULL,
+    Author VARCHAR(255) NOT NULL,
+    Genre VARCHAR(100),
+    Stock INT NOT NULL,
+    PRIMARY KEY (BookID)
+);

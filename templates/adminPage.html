@@ -356,7 +356,7 @@
     }
     
     function fetchRequestedBook() {
-        fetch('/fetchbookissuerequests')
+        fetch('/admin/fetchbookissuerequests')
         .then(response => response.json())
         .then(data => {
             const table = document.querySelector('.requestTable');
@@ -386,7 +386,7 @@
     }
 
     function fetchIssuedBooks(){
-        fetch('/fetchissuedbooklist')
+        fetch('/admin/fetchissuedbooklist')
         .then(response => response.json())
         .then(data => {
             const table = document.querySelector('.issuedTable');
@@ -434,7 +434,7 @@
                     "issueId":parseInt( document.getElementById("ReturnIssueId").value,10),
                     "returnDate": formattedDate+"T00:00:00Z"
                 };
-                fetch('/bookreturn', {
+                fetch('/admin/bookreturn', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -473,7 +473,7 @@ function AddBook() {
                 "stock": parseInt(document.getElementById('bookStock').value, 10)
             };
         
-            fetch('/addbook', {
+            fetch('/admin/addbook', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -515,7 +515,7 @@ function EditBook() {
                 "stock": parseInt(document.getElementById('editStock').value, 10)
             };
         
-            fetch('/updatebook', {
+            fetch('/admin/updatebook', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -580,7 +580,7 @@ function AllocateBook() {
                 "issueDate": formattedDate+"T00:00:00Z",
                 "returnDate": document.getElementById('returnDate').value+"T00:00:00Z"
             };
-            fetch('/allocatebook', {
+            fetch('/admin/allocatebook', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -617,7 +617,7 @@ function RejectAllocateBookRequest() {
                 "userId": parseInt(document.getElementById("selectedUserId").value, 10),
                 "bookId": parseInt(document.getElementById("selectedBookId").value, 10),
             };
-            fetch('/rejectbookissue', {
+            fetch('/admin/rejectbookissue', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

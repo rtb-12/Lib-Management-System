@@ -147,7 +147,7 @@
         // Assuming UserID is stored in a variable named userID
         const userID = getUserIdFromJwt(); // Implement getUserID to retrieve UserID
     
-        fetch('/fetchbookissueduser', {
+        fetch('/user/fetchbookissueduser', {
             method: 'POST', // Specify the method
             headers: {
                 'Content-Type': 'application/json', // Specify the content type
@@ -214,7 +214,7 @@
                 // Get bookID from the data attribute of the clicked button
                 const bookID = parseInt(button.getAttribute("data-bookid"), 10);
     
-                fetch('/requestbookissue', {
+                fetch('/user/requestbookissue', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

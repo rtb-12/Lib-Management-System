@@ -3,7 +3,11 @@
 The Library Management System is a comprehensive solution designed to manage library operations efficiently. It facilitates the registration and login of administrators, allows users to browse a catalog of books, request book issuances, and track their issued books.
 
 #### NOTE: 
-This project was given as an assignment to SDSLabs and other sister Clubs.  
+This project was given as an assignment to SDSLabs and other sister Clubs. 
+
+#### Future Enhancements
+
+- **Containerization**: I plan to dockerize the application to streamline deployment processes and ensure consistency across different environments. This will facilitate easier scaling, development, and testing.
 
 ## Getting Started
 
